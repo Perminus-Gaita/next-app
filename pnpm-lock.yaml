@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@neondatabase/auth':
+        specifier: 0.1.0-beta.21
+        version: 0.1.0-beta.21(a819b967f642ba2ecc19d3518b18a26d)
       '@neondatabase/neon-js':
         specifier: 0.1.0-beta.22
         version: 0.1.0-beta.22(a819b967f642ba2ecc19d3518b18a26d)
@@ -6555,7 +6558,7 @@ snapshots:
   better-call@1.1.5(zod@4.3.6):
     dependencies:
       '@better-auth/utils': 0.3.0
-      '@better-fetch/fetch': 1.1.18
+      '@better-fetch/fetch': 1.1.21
       rou3: 0.7.12
       set-cookie-parser: 2.7.2
     optionalDependencies:

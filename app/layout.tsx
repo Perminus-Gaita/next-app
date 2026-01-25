@@ -1,7 +1,8 @@
-// app/layout.tsx
 import { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { authClient } from '@/lib/auth/client';
+import { NeonAuthUIProvider, UserButton } from '@neondatabase/auth/react';
 
 export const metadata: Metadata = {
   title: "My App",
@@ -19,11 +20,20 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-gray-900">
-        <main className="min-h-screen">
-          {children}
-        </main>
+        <NeonAuthUIProvider
+          authClient={authClient}
+          redirectTo="/account/settings"
+          emailOTP
+        >
+          <header className="flex justify-end items-center p-4 gap-4 h-16">
+            <UserButton size="icon" />
+          </header>
+          <main className="min-h-screen">
+            {children}
+          </main>
+        </NeonAuthUIProvider>
       </body>
     </html>
   );
