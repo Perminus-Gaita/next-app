@@ -6,6 +6,9 @@ import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { Menu, X, Sun, Moon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { UserButton } from '@neondatabase/auth/react';
+import { useAuthModal } from '@/lib/stores/auth-modal-store';
+import { authClient } from '@/lib/auth/client';
 
 interface MainNavbarProps {
   openLeftSidebar: boolean;
@@ -17,10 +20,22 @@ type Theme = "light" | "dark";
 export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNavbarProps) {
   const isMobile = useMediaQuery('(max-width: 639px)');
   const [theme, setTheme] = useState<Theme>("light");
+  const { openAuthModal } = useAuthModal();
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const savedTheme = (localStorage.getItem("theme") as Theme) || "light";
     setTheme(savedTheme);
+    document.documentElement.classList.toggle("dark", savedTheme === "dark");
+  }, []);
+
+  useEffect(() => {
+    // Check if user is logged in
+    authClient.getSession().then(session => {
+      setUser(session?.data?.user || null);
+      setLoading(false);
+    });
   }, []);
 
   const toggleTheme = () => {
@@ -51,9 +66,25 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
 
       <h1 className="text-sm font-semibold">My App</h1>
 
-      <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8">
-        {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
-      </Button>
+      <div className="flex items-center gap-2">
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8">
+          {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+        </Button>
+
+        {loading ? (
+          <div className="w-8 h-8" /> 
+        ) : user ? (
+          <UserButton size="icon" />
+        ) : (
+          <Button 
+            onClick={() => openAuthModal()} 
+            size="sm"
+            className="h-8"
+          >
+            Sign In
+          </Button>
+        )}
+      </div>
     </header>
   );
 }

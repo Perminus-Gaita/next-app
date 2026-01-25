@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { authClient } from '@/lib/auth/client';
 import { NeonAuthUIProvider, UserButton } from '@neondatabase/auth/react';
+import AuthModal from '@/components/auth/AuthModal';
 
 export const metadata: Metadata = {
   title: "My App",
@@ -24,7 +25,8 @@ export default function RootLayout({ children }: RootLayoutProps) {
       <body className="bg-white dark:bg-gray-900">
         <NeonAuthUIProvider
           authClient={authClient}
-          redirectTo="/account/settings"
+          social={{ providers: ['google', 'telegram'] }}
+          redirectTo="/lobby"
           emailOTP
         >
           <header className="flex justify-end items-center p-4 gap-4 h-16">
@@ -33,6 +35,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <main className="min-h-screen">
             {children}
           </main>
+          <AuthModal />
         </NeonAuthUIProvider>
       </body>
     </html>
