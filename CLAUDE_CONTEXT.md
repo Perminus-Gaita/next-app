@@ -11,6 +11,9 @@ File Structure:
 │   │   │   │   └── page.tsx
 │   │   │   ├── sign-in
 │   │   │   │   └── page.tsx
+│   │   │   ├── telegram
+│   │   │   │   ├── callback
+│   │   │   │   │   └── route.js
 │   │   ├── jackpots
 │   │   │   └── client.tsx
 │   │   │   └── page.tsx
@@ -45,12 +48,17 @@ File Structure:
 │   │   └── BottomNavigation.tsx
 │   │   └── LeftSideBar.tsx
 │   │   └── MainNavbar.tsx
+│   │   ├── main-navbar
+│   │   │   └── index.tsx
+│   │   │   ├── main-navbar-dropdown
+│   │   │   │   └── index.tsx
 │   ├── ui
 │   │   └── avatar.tsx
 │   │   └── badge.tsx
 │   │   └── button.tsx
 │   │   └── scroll-area.tsx
 │   │   └── sheet.tsx
+│   │   └── switch.tsx
 │   │   └── tooltip.tsx
 └── components.json
 ├── features
