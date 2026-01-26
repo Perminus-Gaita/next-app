@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { authClient } from '@/lib/auth/client';
 
 interface TelegramUser {
   id: number;
@@ -52,12 +53,13 @@ export default function TelegramLoginWidget({
     setError(null);
 
     try {
-      // Send to our backend for verification
+      // Step 1: Send Telegram data to backend for verification and get nonce
       const response = await fetch('/api/auth/telegram/callback', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify(user),
       });
 
@@ -66,6 +68,22 @@ export default function TelegramLoginWidget({
       if (!response.ok || !data.success) {
         throw new Error(data.error || 'Authentication failed');
       }
+
+      console.log('✅ Received nonce from backend');
+
+      // Step 2: Use the nonce to sign in via Neon Auth
+      // This will set the proper session cookie
+      const telegramEmail = `telegram_${user.id}@telegram.local`;
+      const signInResult = await authClient.signIn.email({
+        email: telegramEmail,
+        password: data.nonce, // Use nonce as temporary password
+      });
+
+      if (signInResult.error) {
+        throw new Error(signInResult.error.message || 'Sign in failed');
+      }
+
+      console.log('✅ Signed in successfully with Neon Auth');
 
       // Call custom callback if provided
       if (onAuth) {

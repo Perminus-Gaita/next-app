@@ -14,3 +14,13 @@ model Team {
   name      String
   createdAt DateTime @default(now())
 }
+
+model TelegramNonce {
+  id          String   @id @default(cuid())
+  nonce       String   @unique
+  telegramId  BigInt   // Telegram IDs can be large
+  expiresAt   DateTime
+  createdAt   DateTime @default(now())
+
+  @@map("telegram_nonce")
+}
