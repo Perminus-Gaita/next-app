@@ -87,6 +87,7 @@ File Structure:
 ├── lib
 │   ├── auth
 │   │   └── client.ts
+│   │   └── nonce-store.ts
 │   └── prisma.ts
 │   ├── stores
 │   │   └── auth-modal-store.ts
@@ -95,6 +96,8 @@ File Structure:
 ├── prisma
 │   ├── migrations
 │   │   ├── 20260124111340_init
+│   │   │   └── migration.sql
+│   │   ├── 20260126085847_add_telegram_nonce
 │   │   │   └── migration.sql
 │   │   └── migration_lock.toml
 │   └── schema.prisma
