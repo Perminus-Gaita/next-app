@@ -3,7 +3,7 @@
 import { useRef, useState, useEffect, ReactNode } from "react";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import LeftSideBar from "@/components/navigation/LeftSideBar";
-import MainNavbar from "@/components/navigation/MainNavbar";
+import MainNavbar from "@/components/navigation/main-navbar/index";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
 
 interface SidebarStyles {
