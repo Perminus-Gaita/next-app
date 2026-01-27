@@ -1,16 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useSearchParams } from "next/navigation";
 import { Send, Sparkles } from 'lucide-react';
-import MarketsTab from './components/markets-tab';
-import PoolsTab from './components/pools-tab';
-import RatingsTab from './components/ratings-tab';
-import NFTsTab from './components/nfts-tab';
-import ShowsTab from './components/shows-tab';
 
 const TabNavigation = () => {
-  const searchParams = useSearchParams();
-  const [selectedTab, setSelectedTab] = useState("markets");
   const [isMobile, setIsMobile] = useState(false);
   const [message, setMessage] = useState('');
   const [currentGreeting, setCurrentGreeting] = useState('');
@@ -56,21 +48,6 @@ const TabNavigation = () => {
     }
   }, [message]);
 
-  useEffect(() => {
-    const tab = searchParams.get("tab");
-    if (tab === "pools") {
-      setSelectedTab("pools");
-    } else if (tab === "markets") {
-      setSelectedTab("markets");
-    } else if (tab === "leaderboard") {
-      setSelectedTab("leaderboard");
-    } else if (tab === "nfts") {
-      setSelectedTab("nfts");
-    } else if (tab === "shows") {
-      setSelectedTab("shows");
-    }
-  }, [searchParams]);
-
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -86,33 +63,6 @@ const TabNavigation = () => {
 
   const setExampleQuery = (query) => {
     setMessage(query);
-  };
-
-  const renderTabContent = () => {
-    switch (selectedTab) {
-      case "featured":
-        return (
-          <div className="p-6 mt-4 bg-gray-50 dark:bg-gray-800 rounded-md">
-            <p className="text-lg">This is the featured tab. This text is a placeholder.</p>
-          </div>
-        );
-      // case "markets":
-      //   return <MarketsTab />;
-      // case "pools":
-      //   return <PoolsTab />;
-      // case "leaderboard":
-      //   return <RatingsTab />;
-      // case "nfts":
-      //   return <NFTsTab />;
-      // case "shows":
-        return <ShowsTab />;
-      default:
-        return (
-          <div className="p-6 mt-4 bg-gray-50 dark:bg-gray-800 rounded-md">
-            <p className="text-lg">Select a tab to view content.</p>
-          </div>
-        );
-    }
   };
 
   return (
@@ -166,8 +116,6 @@ const TabNavigation = () => {
             </div>
           </div>
         </div>
-
-        <div className="w-full">{renderTabContent()}</div>
       </div>
     </div>
   );
