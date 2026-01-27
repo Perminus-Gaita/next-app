@@ -26,7 +26,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <NeonAuthUIProvider
           authClient={authClient}
           social={{ providers: ['google', 'telegram'] }}
-          redirectTo="/lobby"
+          redirectTo="/nyumbani"
           emailOTP
         >
           <header className="flex justify-end items-center p-4 gap-4 h-16">

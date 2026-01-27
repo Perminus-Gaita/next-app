@@ -15,13 +15,13 @@ export default function BottomNavigation({ openLeftSidebar, onToggleSidebar }: B
   return (
     <div className="fixed bottom-0 left-0 right-0 h-16 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 flex items-center justify-around md:hidden z-10">
       <Link
-        href="/lobby"
+        href="/nyumbani"
         className={`flex flex-col items-center justify-center w-1/3 ${
-          pathname === "/lobby" ? "text-blue-600" : "text-gray-600 dark:text-gray-400"
+          pathname === "/nyumbani" ? "text-blue-600" : "text-gray-600 dark:text-gray-400"
         }`}
       >
         <Home className="h-5 w-5" />
-        <span className="text-xs mt-1">Lobby</span>
+        <span className="text-xs mt-1">Nyumbani</span>
       </Link>
 
       <Link

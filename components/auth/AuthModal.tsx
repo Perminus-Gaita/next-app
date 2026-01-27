@@ -104,7 +104,7 @@ export default function AuthModal() {
                 <TelegramLoginWidget
                   botUsername={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || ''}
                   buttonSize="large"
-                  redirectTo="/lobby"
+                  redirectTo="/nyumbani"
                   onAuth={() => closeAuthModal()}
                 />
               </>

@@ -52,7 +52,7 @@ export default function CustomAuthPage() {
           <TelegramLoginWidget
             botUsername={process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || ''}
             buttonSize="large"
-            redirectTo="/lobby"
+            redirectTo="/nyumbani"
           />
         </div>
       </div>

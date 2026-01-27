@@ -41,7 +41,7 @@ export default function TelegramLoginWidget({
   usePic = true,
   lang = 'en',
   onAuth,
-  redirectTo = '/lobby',
+  redirectTo = '/nyumbani',
 }: TelegramLoginWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();

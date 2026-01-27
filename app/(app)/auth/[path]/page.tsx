@@ -64,7 +64,7 @@ export default function AuthPage({ params }: AuthPageProps) {
 
         {/* Google Card */}
         <div
-          onClick={() => authClient.signIn.social({ provider: 'google', callbackURL: '/lobby' })}
+          onClick={() => authClient.signIn.social({ provider: 'google', callbackURL: '/nyumbani' })}
           className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-all border-2 border-transparent hover:border-blue-500"
         >
           <div className="flex items-center gap-4">
@@ -85,7 +85,7 @@ export default function AuthPage({ params }: AuthPageProps) {
 
         {/* Telegram Card */}
         <div
-          onClick={() => authClient.signIn.social({ provider: 'telegram', callbackURL: '/lobby' })}
+          onClick={() => authClient.signIn.social({ provider: 'telegram', callbackURL: '/nyumbani' })}
           className="bg-white dark:bg-gray-800 rounded-xl shadow-md p-6 cursor-pointer hover:shadow-lg transition-all border-2 border-transparent hover:border-blue-500"
         >
           <div className="flex items-center gap-4">

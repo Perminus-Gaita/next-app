@@ -56,7 +56,7 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
   const pathname = usePathname();
 
   const topNavItems: NavItemType[] = [
-    { href: "/lobby", icon: Home, label: "Lobby" },
+    { href: "/nyumbani", icon: Home, label: "Nyumbani" },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
