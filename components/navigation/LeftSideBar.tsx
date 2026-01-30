@@ -1,14 +1,17 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-import { Home, User, Settings, Headset, LucideIcon } from "lucide-react";
+import { Home, User, Settings, Headset, LucideIcon, MessagesSquare } from "lucide-react";
+import ChatsView from "./chats/ChatsView";
 
 interface NavItemType {
-  href: string;
+  href?: string;
   icon: LucideIcon;
   label: string;
+  onClick?: () => void;
 }
 
 interface NavItemProps {
@@ -24,23 +27,15 @@ const NavItem = ({ item, isActive, openLeftSidebar, onClose }: NavItemProps) => 
   const Icon = item.icon;
 
   const handleClick = () => {
-    if ((isMobile || isTablet) && onClose) {
+    if (item.onClick) {
+      item.onClick();
+    } else if ((isMobile || isTablet) && onClose) {
       onClose();
     }
   };
 
-  return (
-    <Link
-      href={item.href}
-      onClick={handleClick}
-      className={cn(
-        "flex items-center justify-start h-12 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 overflow-hidden transition-all duration-300 ease-in-out",
-        isActive
-          ? "bg-gray-100 dark:bg-gray-800 text-blue-600"
-          : "text-gray-700 dark:text-gray-300",
-        openLeftSidebar ? "px-3" : "pl-5.5"
-      )}
-    >
+  const content = (
+    <>
       <Icon className="h-5 w-5 shrink-0" />
       <span 
         className={cn(
@@ -52,7 +47,29 @@ const NavItem = ({ item, isActive, openLeftSidebar, onClose }: NavItemProps) => 
       >
         {item.label}
       </span>
-    </Link>
+    </>
+  );
+
+  const className = cn(
+    "flex items-center justify-start h-12 text-sm font-medium hover:bg-gray-100 dark:hover:bg-gray-800 overflow-hidden transition-all duration-300 ease-in-out",
+    isActive
+      ? "bg-gray-100 dark:bg-gray-800 text-blue-600"
+      : "text-gray-700 dark:text-gray-300",
+    openLeftSidebar ? "px-3" : "pl-[1.375rem]"
+  );
+
+  if (item.href) {
+    return (
+      <Link href={item.href} onClick={handleClick} className={className}>
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <button onClick={handleClick} className={cn(className, "w-full")}>
+      {content}
+    </button>
   );
 };
 
@@ -63,9 +80,15 @@ interface LeftSideBarProps {
 
 export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarProps) {
   const pathname = usePathname();
+  const [showChats, setShowChats] = useState(false);
 
   const topNavItems: NavItemType[] = [
     { href: "/nyumbani", icon: Home, label: "Nyumbani" },
+    { 
+      icon: MessagesSquare, 
+      label: "Chats",
+      onClick: () => setShowChats(true)
+    },
     { href: "/profile", icon: User, label: "Profile" },
   ];
 
@@ -73,6 +96,15 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
     { href: "/support", icon: Headset, label: "Support" },
     { href: "/settings", icon: Settings, label: "Settings" },
   ];
+
+  if (showChats) {
+    return (
+      <ChatsView 
+        openLeftSidebar={openLeftSidebar} 
+        onClose={() => setShowChats(false)} 
+      />
+    );
+  }
 
   return (
     <aside className="h-full overflow-y-auto overflow-x-hidden">
@@ -83,7 +115,7 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
             <NavItem
               key={index}
               item={item}
-              isActive={pathname === item.href}
+              isActive={item.href ? pathname === item.href : false}
               openLeftSidebar={openLeftSidebar}
               onClose={onClose}
             />
