@@ -1,10 +1,10 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
-import { Home, User, Settings, Headset, LucideIcon, MessagesSquare } from "lucide-react";
+import { Home, User, Settings, Headset, Target, MessagesSquare, LucideIcon } from "lucide-react";
+import { useState } from "react";
 import ChatsView from "./chats/ChatsView";
 
 interface NavItemType {
@@ -29,14 +29,15 @@ const NavItem = ({ item, isActive, openLeftSidebar, onClose }: NavItemProps) => 
   const handleClick = () => {
     if (item.onClick) {
       item.onClick();
-    } else if ((isMobile || isTablet) && onClose) {
+    }
+    if ((isMobile || isTablet) && onClose) {
       onClose();
     }
   };
 
   const content = (
     <>
-      <Icon className="h-5 w-5 shrink-0" />
+      <Icon className="h-5 w-5 flex-shrink-0" />
       <span 
         className={cn(
           "whitespace-nowrap transition-all duration-300 ease-in-out",
@@ -90,6 +91,7 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
       onClick: () => setShowChats(true)
     },
     { href: "/profile", icon: User, label: "Profile" },
+    { href: "/strategies", icon: Target, label: "Strategies" },
   ];
 
   const bottomNavItems: NavItemType[] = [
@@ -109,7 +111,6 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
   return (
     <aside className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col h-full">
-        {/* Top navigation items */}
         <div className="flex-1 py-4">
           {topNavItems.map((item, index) => (
             <NavItem
@@ -122,7 +123,6 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
           ))}
         </div>
 
-        {/* Bottom navigation items */}
         <div className="py-4 border-t border-gray-200 dark:border-gray-800">
           {bottomNavItems.map((item, index) => (
             <NavItem
