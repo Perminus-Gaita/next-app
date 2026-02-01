@@ -59,6 +59,7 @@ File Structure:
 │   ├── navigation
 │   │   └── BottomNavigation.tsx
 │   │   └── LeftSideBar.tsx
+│   │   └── LeftSideBar.tsx.backup
 │   │   └── MainNavbar.tsx
 │   │   ├── chats
 │   │   │   └── ChatsView.tsx

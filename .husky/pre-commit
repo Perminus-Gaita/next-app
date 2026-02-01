@@ -1,1 +1,3 @@
+#!/bin/sh
 node create-file-structure.js
+git add CLAUDE_CONTEXT.md
