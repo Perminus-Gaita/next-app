@@ -1,1 +1,1 @@
-pnpm test
+node create-file-structure.js
