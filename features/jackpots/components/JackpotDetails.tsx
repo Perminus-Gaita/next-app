@@ -16,7 +16,7 @@ const JackpotDetails: React.FC<JackpotDetailsProps> = ({ jackpot }) => {
   };
 
   return (
-    <div className="p-4 border-b border-border">
+    <div className="p-4 border-y border-border">
       <div className="text-xs text-muted-foreground mb-3 text-center">
         Jackpot #{jackpot.jackpotHumanId} • {formatDate(jackpot.finished)}
       </div>

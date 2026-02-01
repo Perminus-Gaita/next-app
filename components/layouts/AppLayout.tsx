@@ -1,78 +1,51 @@
 "use client";
-import { useRef, useEffect, ReactNode } from "react";
-import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { useSidebar } from "@/lib/stores/sidebar-store";
-import LeftSideBar from "@/components/navigation/LeftSideBar";
-import MainNavbar from "@/components/navigation/main-navbar/index";
-import BottomNavigation from "@/components/navigation/BottomNavigation";
 
-interface SidebarStyles {
-  sidebar: string;
-  content: string;
-}
+import { useState, useEffect, useRef } from 'react';
+import MainNavbar from '@/components/navigation/MainNavbar';
+import LeftSideBar from '@/components/navigation/LeftSideBar';
+import BottomNavigation from '@/components/navigation/BottomNavigation';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 interface DeviceWidths {
-  open: SidebarStyles;
-  closed: SidebarStyles;
+  mobile: { open: string; closed: string };
+  tablet: { open: string; closed: string };
+  desktop: { open: string; closed: string };
 }
 
-interface SidebarWidths {
-  desktop: DeviceWidths;
-  tablet: DeviceWidths;
-  mobile: DeviceWidths;
-}
-
-const SIDEBAR_WIDTHS: SidebarWidths = {
-  desktop: {
-    open: { sidebar: "w-60", content: "ml-60" },
-    closed: { sidebar: "w-16", content: "ml-16" },
-  },
-  tablet: {
-    open: { sidebar: "w-72", content: "ml-0" },
-    closed: { sidebar: "w-0", content: "ml-0" },
-  },
-  mobile: {
-    open: { sidebar: "w-[65%]", content: "ml-0" },
-    closed: { sidebar: "w-0", content: "ml-0" },
-  },
+const SIDEBAR_WIDTHS: DeviceWidths = {
+  mobile: { open: 'w-64', closed: 'w-0' },
+  tablet: { open: 'w-64', closed: 'w-0' },
+  desktop: { open: 'w-64', closed: 'w-16' },
 };
 
-interface AppLayoutProps {
-  children: ReactNode;
-}
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const [openLeftSidebar, setOpenLeftSidebar] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement>(null);
 
-export default function AppLayout({ children }: AppLayoutProps) {
-  const isMobile = useMediaQuery('(max-width: 639px)');
-  const isTablet = useMediaQuery('(min-width: 640px) and (max-width: 1023px)');
-  
-  const { openLeftSidebar, setOpenLeftSidebar, toggleSidebar } = useSidebar();
-  const sidebarRef = useRef<HTMLElement>(null);
+  const isMobile = useMediaQuery('(max-width:639px)');
+  const isTablet = useMediaQuery('(min-width:640px) and (max-width:1023px)');
 
-  // Dark mode
   useEffect(() => {
-    const isDarkMode = localStorage.getItem("theme") === "dark" ||
-      (!("theme" in localStorage) && window.matchMedia("(prefers-color-scheme: dark)").matches);
-    document.documentElement.classList.toggle("dark", isDarkMode);
-  }, []);
+    if (!isMobile && !isTablet) {
+      setOpenLeftSidebar(true);
+    }
+  }, [isMobile, isTablet]);
 
-  // Close sidebar on click outside (mobile/tablet)
-  useEffect(() => {
-    if (!isMobile && !isTablet) return;
+  const toggleSidebar = () => {
+    setOpenLeftSidebar(!openLeftSidebar);
+  };
 
-    const handleClickOutside = (event: MouseEvent) => {
-      if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
-        setOpenLeftSidebar(false);
-      }
+  const getSidebarStyles = () => {
+    const deviceType = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
+    const state: keyof DeviceWidths[typeof deviceType] = openLeftSidebar ? "open" : "closed";
+    
+    const sidebarWidth = SIDEBAR_WIDTHS[deviceType][state];
+    const marginLeft = deviceType === "desktop" ? (openLeftSidebar ? "ml-64" : "ml-16") : "ml-0";
+    
+    return {
+      sidebar: sidebarWidth,
+      content: marginLeft
     };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isMobile, isTablet, setOpenLeftSidebar]);
-
-  const getSidebarStyles = (): SidebarStyles => {
-    const deviceType: keyof SidebarWidths = isMobile ? "mobile" : isTablet ? "tablet" : "desktop";
-    const state: keyof DeviceWidths = openLeftSidebar ? "open" : "closed";
-    return SIDEBAR_WIDTHS[deviceType][state];
   };
 
   return (
@@ -110,9 +83,9 @@ export default function AppLayout({ children }: AppLayoutProps) {
           />
         </aside>
 
-        {/* Main Content */}
+        {/* Main Content - REMOVED pt-10, pages handle their own padding */}
         <main className={`
-          flex-1 pt-10 px-4 pb-20 md:pb-4 min-h-screen
+          flex-1 px-4 pb-20 md:pb-4 min-h-screen
           transition-all duration-300
           ${getSidebarStyles().content}
         `}>

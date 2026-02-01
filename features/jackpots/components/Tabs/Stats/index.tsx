@@ -21,16 +21,16 @@ const StatsTab: React.FC<StatsTabProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="flex items-center justify-center p-12">
+      <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
       </div>
     );
   }
 
   return (
-    <div className="p-4 space-y-4">
+    <div>
       {stats && (
-        <div className="bg-card border border-border rounded-xl p-4">
+        <div className="px-4 py-4 border-b border-border">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="w-5 h-5 text-primary" />
             <h3 className="font-semibold text-foreground">Outcome Distribution</h3>
@@ -39,7 +39,7 @@ const StatsTab: React.FC<StatsTabProps> = ({
         </div>
       )}
 
-      <div className="bg-card border border-border rounded-xl p-4">
+      <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-2 mb-4">
           <Trophy className="w-5 h-5 text-primary" />
           <h3 className="font-semibold text-foreground">Prize Breakdown</h3>
@@ -52,14 +52,14 @@ const StatsTab: React.FC<StatsTabProps> = ({
                 key={prize.jackpotType}
                 className={`rounded-lg p-3 ${
                   isGrand 
-                    ? 'bg-linear-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30'
+                    ? 'bg-gradient-to-r from-yellow-500/20 to-yellow-600/10 border border-yellow-500/30'
                     : 'bg-muted/50'
                 }`}
               >
                 <div className="flex justify-between items-center">
                   <div>
                     <div className={`text-xs font-medium mb-0.5 ${isGrand ? 'text-yellow-500' : 'text-muted-foreground'}`}>
-                      {isGrand ? '🏆 GRAND JACKPOT' : `${prize.jackpotType} Correct`}
+                      {isGrand ? '🏆 JACKPOT WINNER' : `${prize.jackpotType} Correct`}
                     </div>
                     <div className={`text-base font-bold ${isGrand ? 'text-yellow-500' : 'text-foreground'}`}>
                       KSH {formatCurrency(prize.prize)}
@@ -80,14 +80,16 @@ const StatsTab: React.FC<StatsTabProps> = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
-        <div className="bg-card border border-border rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-foreground">{jackpot.events.length}</div>
-          <div className="text-xs text-muted-foreground mt-1">Total Matches</div>
-        </div>
-        <div className="bg-card border border-border rounded-xl p-4 text-center">
-          <div className="text-2xl font-bold text-foreground">{communityPredictions.length}</div>
-          <div className="text-xs text-muted-foreground mt-1">Predictions</div>
+      <div className="px-4 py-4">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-card border border-border rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-foreground">{jackpot.events.length}</div>
+            <div className="text-xs text-muted-foreground mt-1">Total Matches</div>
+          </div>
+          <div className="bg-card border border-border rounded-xl p-4 text-center">
+            <div className="text-2xl font-bold text-foreground">{communityPredictions.length}</div>
+            <div className="text-xs text-muted-foreground mt-1">Predictions</div>
+          </div>
         </div>
       </div>
     </div>

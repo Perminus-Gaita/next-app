@@ -27,10 +27,11 @@ const DUMMY_JACKPOT: Jackpot = {
   site: "SportPesa",
   totalPrizePool: 250000000,
   currencySign: "KSH",
-  jackpotStatus: "Open",
+  jackpotStatus: "Open", // Change to "Open" or "Finished" to test different states
   isLatest: true,
   finished: new Date("2026-01-25T10:00:00Z").toISOString(),
   bettingClosesAt: new Date("2026-01-26T10:00:00Z").toISOString(),
+  finishedGames: 0, // Change to 10 to test "during" state, 17 for "after" state
   events: [
     {
       eventNumber: 1,
@@ -72,12 +73,109 @@ const DUMMY_JACKPOT: Jackpot = {
       kickoffTime: new Date("2026-01-26T15:00:00Z").toISOString(),
       competition: "Serie A",
     },
+    {
+      eventNumber: 6,
+      competitorHome: "PSG",
+      competitorAway: "Marseille",
+      odds: { home: 1.8, draw: 3.4, away: 4.5 },
+      kickoffTime: new Date("2026-01-26T17:00:00Z").toISOString(),
+      competition: "Ligue 1",
+    },
+    {
+      eventNumber: 7,
+      competitorHome: "Inter Milan",
+      competitorAway: "Napoli",
+      odds: { home: 2.4, draw: 3.1, away: 3.0 },
+      kickoffTime: new Date("2026-01-26T19:00:00Z").toISOString(),
+      competition: "Serie A",
+    },
+    {
+      eventNumber: 8,
+      competitorHome: "Ajax",
+      competitorAway: "PSV",
+      odds: { home: 2.1, draw: 3.3, away: 3.6 },
+      kickoffTime: new Date("2026-01-26T21:00:00Z").toISOString(),
+      competition: "Eredivisie",
+    },
+    {
+      eventNumber: 9,
+      competitorHome: "Benfica",
+      competitorAway: "Porto",
+      odds: { home: 2.3, draw: 3.2, away: 3.1 },
+      kickoffTime: new Date("2026-01-27T15:00:00Z").toISOString(),
+      competition: "Primeira Liga",
+    },
+    {
+      eventNumber: 10,
+      competitorHome: "Celtic",
+      competitorAway: "Rangers",
+      odds: { home: 2.2, draw: 3.0, away: 3.5 },
+      kickoffTime: new Date("2026-01-27T17:00:00Z").toISOString(),
+      competition: "Scottish Premiership",
+    },
+    {
+      eventNumber: 11,
+      competitorHome: "Sevilla",
+      competitorAway: "Athletic Bilbao",
+      odds: { home: 2.0, draw: 3.1, away: 3.9 },
+      kickoffTime: new Date("2026-01-27T19:00:00Z").toISOString(),
+      competition: "La Liga",
+    },
+    {
+      eventNumber: 12,
+      competitorHome: "Dortmund",
+      competitorAway: "Leipzig",
+      odds: { home: 2.3, draw: 3.2, away: 3.3 },
+      kickoffTime: new Date("2026-01-27T21:00:00Z").toISOString(),
+      competition: "Bundesliga",
+    },
+    {
+      eventNumber: 13,
+      competitorHome: "Lyon",
+      competitorAway: "Monaco",
+      odds: { home: 2.4, draw: 3.1, away: 3.0 },
+      kickoffTime: new Date("2026-01-28T15:00:00Z").toISOString(),
+      competition: "Ligue 1",
+    },
+    {
+      eventNumber: 14,
+      competitorHome: "Roma",
+      competitorAway: "Lazio",
+      odds: { home: 2.5, draw: 3.0, away: 2.9 },
+      kickoffTime: new Date("2026-01-28T17:00:00Z").toISOString(),
+      competition: "Serie A",
+    },
+    {
+      eventNumber: 15,
+      competitorHome: "Atletico Madrid",
+      competitorAway: "Villarreal",
+      odds: { home: 1.9, draw: 3.4, away: 4.0 },
+      kickoffTime: new Date("2026-01-28T19:00:00Z").toISOString(),
+      competition: "La Liga",
+    },
+    {
+      eventNumber: 16,
+      competitorHome: "Leverkusen",
+      competitorAway: "Frankfurt",
+      odds: { home: 2.1, draw: 3.3, away: 3.5 },
+      kickoffTime: new Date("2026-01-28T21:00:00Z").toISOString(),
+      competition: "Bundesliga",
+    },
+    {
+      eventNumber: 17,
+      competitorHome: "Nice",
+      competitorAway: "Lille",
+      odds: { home: 2.2, draw: 3.1, away: 3.4 },
+      kickoffTime: new Date("2026-01-29T15:00:00Z").toISOString(),
+      competition: "Ligue 1",
+    },
   ],
   prizes: [
     { jackpotType: "17/17", prize: 150000000, winners: 0 },
     { jackpotType: "16/17", prize: 50000000, winners: 2 },
     { jackpotType: "15/17", prize: 25000000, winners: 15 },
     { jackpotType: "14/17", prize: 10000000, winners: 45 },
+    { jackpotType: "13/17", prize: 5000000, winners: 120 },
   ],
 };
 
@@ -93,42 +191,162 @@ const DUMMY_PREDICTIONS: Prediction[] = [
       { gameNumber: 3, pick: "2" },
       { gameNumber: 4, pick: "1" },
       { gameNumber: 5, pick: "X" },
+      { gameNumber: 6, pick: "2" },
+      { gameNumber: 7, pick: "1" },
+      { gameNumber: 8, pick: "X" },
+      { gameNumber: 9, pick: "2" },
+      { gameNumber: 10, pick: "1" },
+      { gameNumber: 11, pick: "X" },
+      { gameNumber: 12, pick: "2" },
+      { gameNumber: 13, pick: "1" },
+      { gameNumber: 14, pick: "X" },
+      { gameNumber: 15, pick: "2" },
+      { gameNumber: 16, pick: "1" },
+      { gameNumber: 17, pick: "X" },
     ],
-    score: 3,
-    createdAt: new Date("2026-01-24T10:00:00Z").toISOString(),
-    updatedAt: new Date("2026-01-24T10:00:00Z").toISOString(),
+    score: 14,
+    createdAt: new Date("2026-01-24T10:30:00Z").toISOString(),
+    updatedAt: new Date("2026-01-24T10:30:00Z").toISOString(),
   },
   {
     _id: "pred2",
+    jackpotId: "jp001",
+    userId: "user1",
+    username: "JohnDoe",
+    picks: [
+      { gameNumber: 1, pick: "X" },
+      { gameNumber: 2, pick: "1" },
+      { gameNumber: 3, pick: "1" },
+      { gameNumber: 4, pick: "2" },
+      { gameNumber: 5, pick: "1" },
+      { gameNumber: 6, pick: "X" },
+      { gameNumber: 7, pick: "2" },
+      { gameNumber: 8, pick: "1" },
+      { gameNumber: 9, pick: "X" },
+      { gameNumber: 10, pick: "2" },
+      { gameNumber: 11, pick: "1" },
+      { gameNumber: 12, pick: "X" },
+      { gameNumber: 13, pick: "2" },
+      { gameNumber: 14, pick: "1" },
+      { gameNumber: 15, pick: "X" },
+      { gameNumber: 16, pick: "2" },
+      { gameNumber: 17, pick: "1" },
+    ],
+    score: 11,
+    createdAt: new Date("2026-01-24T14:15:00Z").toISOString(),
+    updatedAt: new Date("2026-01-24T14:15:00Z").toISOString(),
+  },
+  {
+    _id: "pred3",
+    jackpotId: "jp001",
+    userId: "user1",
+    username: "JohnDoe",
+    picks: [
+      { gameNumber: 1, pick: "2" },
+      { gameNumber: 2, pick: "2" },
+      { gameNumber: 3, pick: "X" },
+      { gameNumber: 4, pick: "X" },
+      { gameNumber: 5, pick: "2" },
+      { gameNumber: 6, pick: "1" },
+      { gameNumber: 7, pick: "X" },
+      { gameNumber: 8, pick: "2" },
+      { gameNumber: 9, pick: "1" },
+      { gameNumber: 10, pick: "X" },
+      { gameNumber: 11, pick: "2" },
+      { gameNumber: 12, pick: "1" },
+      { gameNumber: 13, pick: "X" },
+      { gameNumber: 14, pick: "2" },
+      { gameNumber: 15, pick: "1" },
+      { gameNumber: 16, pick: "X" },
+      { gameNumber: 17, pick: "2" },
+    ],
+    score: 17, // WINNER!
+    createdAt: new Date("2026-01-25T08:00:00Z").toISOString(),
+    updatedAt: new Date("2026-01-25T08:00:00Z").toISOString(),
+  },
+  {
+    _id: "pred4",
     jackpotId: "jp001",
     userId: "user2",
     username: "JaneSmith",
     picks: [
       { gameNumber: 1, pick: "1" },
-      { gameNumber: 2, pick: "2" },
+      { gameNumber: 2, pick: "1" },
       { gameNumber: 3, pick: "1" },
       { gameNumber: 4, pick: "1" },
-      { gameNumber: 5, pick: "2" },
+      { gameNumber: 5, pick: "1" },
+      { gameNumber: 6, pick: "1" },
+      { gameNumber: 7, pick: "1" },
+      { gameNumber: 8, pick: "1" },
+      { gameNumber: 9, pick: "1" },
+      { gameNumber: 10, pick: "1" },
+      { gameNumber: 11, pick: "1" },
+      { gameNumber: 12, pick: "1" },
+      { gameNumber: 13, pick: "1" },
+      { gameNumber: 14, pick: "1" },
+      { gameNumber: 15, pick: "1" },
+      { gameNumber: 16, pick: "1" },
+      { gameNumber: 17, pick: "1" },
     ],
-    score: 2,
-    createdAt: new Date("2026-01-24T08:00:00Z").toISOString(),
-    updatedAt: new Date("2026-01-24T08:00:00Z").toISOString(),
+    score: 13, // BONUS ZONE!
+    createdAt: new Date("2026-01-24T11:00:00Z").toISOString(),
+    updatedAt: new Date("2026-01-24T11:00:00Z").toISOString(),
   },
   {
-    _id: "pred3",
+    _id: "pred5",
+    jackpotId: "jp001",
+    userId: "user2",
+    username: "JaneSmith",
+    picks: [
+      { gameNumber: 1, pick: "X" },
+      { gameNumber: 2, pick: "X" },
+      { gameNumber: 3, pick: "X" },
+      { gameNumber: 4, pick: "X" },
+      { gameNumber: 5, pick: "X" },
+      { gameNumber: 6, pick: "X" },
+      { gameNumber: 7, pick: "X" },
+      { gameNumber: 8, pick: "X" },
+      { gameNumber: 9, pick: "X" },
+      { gameNumber: 10, pick: "X" },
+      { gameNumber: 11, pick: "X" },
+      { gameNumber: 12, pick: "X" },
+      { gameNumber: 13, pick: "X" },
+      { gameNumber: 14, pick: "X" },
+      { gameNumber: 15, pick: "X" },
+      { gameNumber: 16, pick: "X" },
+      { gameNumber: 17, pick: "X" },
+    ],
+    score: 9,
+    createdAt: new Date("2026-01-24T16:30:00Z").toISOString(),
+    updatedAt: new Date("2026-01-24T16:30:00Z").toISOString(),
+  },
+  {
+    _id: "pred6",
     jackpotId: "jp001",
     userId: "user3",
     username: "MikeJones",
     picks: [
-      { gameNumber: 1, pick: "X" },
-      { gameNumber: 2, pick: "1" },
-      { gameNumber: 3, pick: "2" },
+      { gameNumber: 1, pick: "2" },
+      { gameNumber: 2, pick: "X" },
+      { gameNumber: 3, pick: "1" },
       { gameNumber: 4, pick: "2" },
-      { gameNumber: 5, pick: "1" },
+      { gameNumber: 5, pick: "X" },
+      { gameNumber: 6, pick: "1" },
+      { gameNumber: 7, pick: "2" },
+      { gameNumber: 8, pick: "X" },
+      { gameNumber: 9, pick: "1" },
+      { gameNumber: 10, pick: "2" },
+      { gameNumber: 11, pick: "X" },
+      { gameNumber: 12, pick: "1" },
+      { gameNumber: 13, pick: "2" },
+      { gameNumber: 14, pick: "X" },
+      { gameNumber: 15, pick: "1" },
+      { gameNumber: 16, pick: "2" },
+      { gameNumber: 17, pick: "X" },
     ],
-    score: 4,
-    createdAt: new Date("2026-01-24T06:00:00Z").toISOString(),
-    updatedAt: new Date("2026-01-24T06:00:00Z").toISOString(),
+    score: 15, // BONUS ZONE!
+    createdAt: new Date("2026-01-25T09:45:00Z").toISOString(),
+    updatedAt: new Date("2026-01-25T09:45:00Z").toISOString(),
   },
 ];
 
@@ -177,7 +395,7 @@ const DUMMY_STATS: Statistics = {
 // ============================================
 
 const JackpotSkeleton = () => (
-  <div className="min-h-screen bg-background">
+  <div className="min-h-screen">
     <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
       <div className="p-4 border-b border-border">
         <div className="animate-pulse space-y-3">
@@ -211,8 +429,8 @@ interface JackpotErrorProps {
 }
 
 const JackpotError: React.FC<JackpotErrorProps> = ({ error, onRetry }) => (
-  <div className="min-h-screen bg-background">
-    <div className="max-w-2xl mx-auto border-x border-border min-h-screen flex items-center justify-center p-8">
+  <div className="min-h-screen">
+    <div className="max-w-2xl mx-auto border-x border-border min-h-screen bg-background flex items-center justify-center p-8">
       <div className="text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h2 className="text-lg font-semibold text-foreground mb-2">
@@ -223,10 +441,10 @@ const JackpotError: React.FC<JackpotErrorProps> = ({ error, onRetry }) => (
         </p>
         <button
           onClick={onRetry}
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+          className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
-          Try Again
+          Retry
         </button>
       </div>
     </div>
@@ -237,26 +455,18 @@ const JackpotError: React.FC<JackpotErrorProps> = ({ error, onRetry }) => (
 // MAIN COMPONENT
 // ============================================
 
-interface JackpotTrackerProps {
-  jackpotId?: string;
-}
-
-export default function JackpotTracker({ jackpotId = "latest" }: JackpotTrackerProps) {
+export default function JackpotsClient() {
   const [activeTab, setActiveTab] = useState<TabType>("matches");
-  const [localPicks, setLocalPicks] = useState<LocalPicks>({});
-  const [predictions, setPredictions] = useState<Prediction[]>(DUMMY_PREDICTIONS);
+  const [loading] = useState(false);
+  const [error] = useState<string | null>(null);
+  const [jackpot] = useState<Jackpot>(DUMMY_JACKPOT);
+  const [predictions] = useState<Prediction[]>(DUMMY_PREDICTIONS);
   const [comments, setComments] = useState<Comment[]>(DUMMY_COMMENTS);
-  
-  // Using dummy data - in production, this would come from API
-  const jackpot = DUMMY_JACKPOT;
-  const stats = DUMMY_STATS;
-  const loading = false;
-  const error = null;
+  const [stats] = useState<Statistics>(DUMMY_STATS);
+  const [localPicks, setLocalPicks] = useState<LocalPicks>({});
 
-  // Convert user prediction picks to the local format
-  const userPicks: LocalPicks = { ...localPicks };
+  const userPicks: LocalPicks = localPicks;
 
-  // Handle local pick selection
   const handlePickSelect = (eventNumber: number, pick: LocalPick) => {
     setLocalPicks((prev) => ({
       ...prev,
@@ -264,14 +474,12 @@ export default function JackpotTracker({ jackpotId = "latest" }: JackpotTrackerP
     }));
   };
 
-  // Save prediction (dummy implementation)
   const handleSavePrediction = () => {
     console.log("Saving prediction:", localPicks);
     alert("Prediction saved! (This is dummy data)");
     setLocalPicks({});
   };
 
-  // Add comment (dummy implementation)
   const handleAddComment = (text: string) => {
     const newComment: Comment = {
       _id: `com_${Date.now()}`,
@@ -285,7 +493,6 @@ export default function JackpotTracker({ jackpotId = "latest" }: JackpotTrackerP
     setComments([newComment, ...comments]);
   };
 
-  // Delete comment (dummy implementation)
   const handleDeleteComment = (commentId: string) => {
     setComments(comments.filter((c) => c._id !== commentId));
   };
@@ -301,7 +508,7 @@ export default function JackpotTracker({ jackpotId = "latest" }: JackpotTrackerP
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen">
       <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
         <JackpotDetails jackpot={jackpot} />
         <TabsHeader activeTab={activeTab} setActiveTab={setActiveTab} />

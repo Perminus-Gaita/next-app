@@ -27,6 +27,7 @@ export interface Jackpot {
   bettingClosesAt: string;
   events: JackpotEvent[];
   prizes: JackpotPrize[];
+  finishedGames?: number; // NEW: Track how many games have finished
 }
 
 export interface PredictionPick {

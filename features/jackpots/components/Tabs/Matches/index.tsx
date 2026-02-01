@@ -27,9 +27,9 @@ const MatchesTab: React.FC<MatchesTabProps> = ({
   const isFinished = jackpotStatus === 'Finished' || jackpotStatus === 'Closed';
 
   return (
-    <div className="p-4 space-y-4">
+    <div>
       {hasUnsavedPicks && !isFinished && (
-        <div className="sticky top-16 z-10 bg-background/95 backdrop-blur-sm p-3 rounded-xl border border-border shadow-lg">
+        <div className="sticky top-0 z-10 bg-primary/10 backdrop-blur-sm px-4 py-3 border-b border-primary/30">
           <button
             onClick={onSavePrediction}
             disabled={isSaving}
@@ -47,15 +47,19 @@ const MatchesTab: React.FC<MatchesTabProps> = ({
         </div>
       )}
 
-      {events.map((event) => (
-        <MatchCard
-          key={event.eventNumber}
-          event={event}
-          prediction={predictions[event.eventNumber]}
-          onSelect={onSelect}
-          isFinished={isFinished}
-        />
-      ))}
+      {events.map((event, idx) => {
+        const isLast = idx === events.length - 1;
+        return (
+          <div key={event.eventNumber} className={`${!isLast ? 'border-b border-border' : ''}`}>
+            <MatchCard
+              event={event}
+              prediction={predictions[event.eventNumber]}
+              onSelect={onSelect}
+              isFinished={isFinished}
+            />
+          </div>
+        );
+      })}
     </div>
   );
 };

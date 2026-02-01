@@ -19,7 +19,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
   const getButtonStyle = (pick: LocalPick) => {
     const isSelected = prediction === pick;
     const baseStyle = "flex flex-col items-center justify-center p-2 rounded-lg transition-all";
-    
+
     if (isFinished) {
       if (event.result) {
         const resultMap: Record<'1' | 'X' | '2', LocalPick> = {
@@ -28,23 +28,22 @@ const MatchCard: React.FC<MatchCardProps> = ({
           '2': 'Away'
         };
         const correctPick = resultMap[event.result];
-        
         if (pick === correctPick) {
           return `${baseStyle} bg-green-500/20 border-2 border-green-500 text-green-500`;
         }
       }
       return `${baseStyle} bg-muted/50 text-muted-foreground cursor-not-allowed`;
     }
-    
+
     if (isSelected) {
       return `${baseStyle} bg-primary text-primary-foreground border-2 border-primary`;
     }
-    
+
     return `${baseStyle} bg-muted hover:bg-muted/70 text-foreground border-2 border-transparent`;
   };
 
   return (
-    <div className="bg-card border border-border rounded-xl p-4">
+    <div className="px-4 py-4">
       <div className="flex items-center justify-between mb-3">
         <span className="bg-primary/15 text-primary px-2 py-1 rounded text-xs font-semibold">
           #{event.eventNumber}
@@ -52,12 +51,13 @@ const MatchCard: React.FC<MatchCardProps> = ({
         <span className="text-xs text-muted-foreground">{event.competition}</span>
       </div>
 
-      <div className="mb-4">
-        <div className="text-sm font-semibold text-foreground mb-1">
+      {/* Team names - horizontal */}
+      <div className="mb-4 flex items-center justify-center gap-2">
+        <div className="text-sm font-semibold text-foreground text-right flex-1">
           {event.competitorHome}
         </div>
-        <div className="text-xs text-muted-foreground mb-1">vs</div>
-        <div className="text-sm font-semibold text-foreground">
+        <div className="text-xs text-muted-foreground px-2">vs</div>
+        <div className="text-sm font-semibold text-foreground text-left flex-1">
           {event.competitorAway}
         </div>
       </div>
