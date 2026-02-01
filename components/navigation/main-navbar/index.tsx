@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
-import { Menu, X, Sun, Moon, Trophy } from "lucide-react";
+import { Menu, X, Sun, Moon, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useAuthModal } from '@/lib/stores/auth-modal-store';
@@ -90,13 +90,14 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
         {!isMobile && (
           <button
             onClick={toggleDrawer}
+            disabled={isDrawerOpen}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed transition-colors ${
               isDrawerOpen
                 ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border-gray-300 dark:border-gray-700 cursor-not-allowed"
                 : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700"
             }`}
           >
-            <Trophy className="h-4 w-4" />
+            <ScrollText className="h-4 w-4" />
             <div className="flex items-center">
               <span className="text-sm font-bold">PICKS:</span>
               <span
@@ -126,7 +127,7 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               data-dropdown-trigger
-              className="w-8 h-8 rounded-full overflow-hidden bg-linear-to-r from-pink-500 to-orange-500 flex items-center justify-center hover:opacity-80 transition-opacity"
+              className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center hover:opacity-80 transition-opacity"
             >
               {user.image ? (
                 <img 
@@ -151,21 +152,25 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
             />
           </div>
         ) : (
-          <Button 
-            onClick={() => openAuthModal()} 
+          <Button
+            variant="ghost"
             size="sm"
-            className="h-8"
+            onClick={() => openAuthModal('login')}
+            className="h-8 text-sm"
           >
             Sign In
           </Button>
         )}
       </div>
 
-      {/* Add pulse animation for picks count */}
       <style jsx global>{`
         @keyframes customPulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          0%, 100% {
+            opacity: 1;
+          }
+          50% {
+            opacity: 0.5;
+          }
         }
       `}</style>
     </header>

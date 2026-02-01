@@ -497,7 +497,6 @@ export default function JackpotsClient() {
     setComments(comments.filter((c) => c._id !== commentId));
   };
 
-  const hasUnsavedPicks = Object.keys(localPicks).length > 0;
 
   if (loading) {
     return <JackpotSkeleton />;
@@ -519,9 +518,6 @@ export default function JackpotsClient() {
               events={jackpot.events}
               predictions={userPicks}
               onSelect={handlePickSelect}
-              hasUnsavedPicks={hasUnsavedPicks}
-              onSavePrediction={handleSavePrediction}
-              isSaving={false}
               jackpotStatus={jackpot.jackpotStatus}
             />
           )}

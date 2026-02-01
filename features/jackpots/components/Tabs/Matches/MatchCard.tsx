@@ -6,18 +6,26 @@ import type { JackpotEvent, LocalPick } from "@/features/jackpots/types";
 
 interface MatchCardProps {
   event: JackpotEvent;
-  userPick?: LocalPick;
-  onSelect: (eventNumber: number, pick: LocalPick) => void;
+  prediction?: LocalPick;
+  onSelect?: (eventNumber: number, pick: LocalPick) => void;
+  isFinished?: boolean;
 }
 
-const MatchCard: React.FC<MatchCardProps> = ({ event, userPick, onSelect }) => {
+const MatchCard: React.FC<MatchCardProps> = ({ 
+  event, 
+  prediction, 
+  onSelect,
+  isFinished = false 
+}) => {
   const { picks, addPick } = usePicksStore();
   
   // Check if this event has a pick in the store
   const existingPick = picks.find((p) => p.eventNumber === event.eventNumber);
-  const currentSelection = existingPick?.selection || userPick;
+  const currentSelection = existingPick?.selection || prediction;
 
   const handlePickSelect = (pick: LocalPick) => {
+    if (isFinished) return;
+    
     const odds = 
       pick === "Home" ? event.odds.home :
       pick === "Draw" ? event.odds.draw :
@@ -35,8 +43,10 @@ const MatchCard: React.FC<MatchCardProps> = ({ event, userPick, onSelect }) => {
       kickoffTime: event.kickoffTime,
     });
 
-    // Also call parent handler for local state sync
-    onSelect(event.eventNumber, pick);
+    // Also call parent handler for local state sync if provided
+    if (onSelect) {
+      onSelect(event.eventNumber, pick);
+    }
   };
 
   return (
@@ -50,10 +60,11 @@ const MatchCard: React.FC<MatchCardProps> = ({ event, userPick, onSelect }) => {
         </div>
       </div>
 
-      <div className="mb-3">
-        <div className="text-base font-bold">{event.competitorHome}</div>
-        <div className="text-xs text-muted-foreground my-1">vs</div>
-        <div className="text-base font-bold">{event.competitorAway}</div>
+      {/* UPDATED: Horizontal team names layout */}
+      <div className="mb-3 flex items-center justify-between gap-2">
+        <div className="text-sm font-bold flex-1 text-right">{event.competitorHome}</div>
+        <div className="text-xs text-muted-foreground px-2">vs</div>
+        <div className="text-sm font-bold flex-1 text-left">{event.competitorAway}</div>
       </div>
 
       <div className="grid grid-cols-3 gap-2 mb-3">
@@ -68,16 +79,17 @@ const MatchCard: React.FC<MatchCardProps> = ({ event, userPick, onSelect }) => {
             <button
               key={pick}
               onClick={() => handlePickSelect(pick)}
+              disabled={isFinished}
               className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                 isSelected
                   ? "bg-primary text-primary-foreground"
                   : "bg-muted hover:bg-muted/80"
-              }`}
+              } ${isFinished ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <span className="block text-xs mb-1">
                 {pick === "Home" ? "1" : pick === "Draw" ? "X" : "2"}
               </span>
-              <span className="text-base font-bold">{odds}</span>
+              <span className="text-base font-bold">{odds.toFixed(2)}</span>
             </button>
           );
         })}
