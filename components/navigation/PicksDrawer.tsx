@@ -164,7 +164,7 @@ const PicksDrawer = () => {
       {/* Overlay for the background - only appears when drawer is open */}
       {isDrawerOpen && (
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 z-40"
+          className="fixed inset-0 bg-black/30 z-40"
           onClick={isModalOpen ? undefined : handleClose}
           style={{ position: 'fixed' }}
         />

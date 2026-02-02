@@ -127,7 +127,7 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
             <button
               onClick={() => setDropdownOpen(!dropdownOpen)}
               data-dropdown-trigger
-              className="w-8 h-8 rounded-full overflow-hidden bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center hover:opacity-80 transition-opacity"
+              className="w-8 h-8 rounded-full overflow-hidden bg-linear-to-r from-pink-500 to-orange-500 flex items-center justify-center hover:opacity-80 transition-opacity"
             >
               {user.image ? (
                 <img 
