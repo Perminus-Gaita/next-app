@@ -12,6 +12,9 @@ File Structure:
 │   │   │   ├── sign-in
 │   │   │   │   └── page.tsx
 │   │   ├── h2h
+│   │   │   ├── [jackpotId]
+│   │   │   │   ├── [matchNumber]
+│   │   │   │   │   └── page.tsx
 │   │   │   └── client.jsx
 │   │   │   ├── components
 │   │   │   │   └── StrategyWorkflow.jsx
@@ -98,6 +101,8 @@ File Structure:
 │   │   │   │   │   └── index.tsx
 │   │   │   │   ├── Stats
 │   │   │   │   │   └── BellCurve.tsx
+│   │   │   │   │   └── index.tsx
+│   │   │   │   ├── Strategies
 │   │   │   │   │   └── index.tsx
 │   │   │   └── TabsHeader.tsx
 │   │   ├── types

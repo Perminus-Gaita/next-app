@@ -25,9 +25,9 @@ export interface Jackpot {
   isLatest: boolean;
   finished: string;
   bettingClosesAt: string;
+  finishedGames?: number;
   events: JackpotEvent[];
   prizes: JackpotPrize[];
-  finishedGames?: number; // NEW: Track how many games have finished
 }
 
 export interface PredictionPick {
@@ -72,4 +72,4 @@ export interface LocalPicks {
   [eventNumber: number]: LocalPick;
 }
 
-export type TabType = 'matches' | 'predictions' | 'stats' | 'comments';
+export type TabType = 'matches' | 'predictions' | 'stats' | 'comments' | 'strategies';
