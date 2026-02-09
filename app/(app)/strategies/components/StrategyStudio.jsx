@@ -13,37 +13,130 @@ import ReactFlow, {
   Position,
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Plus, Play, Save, Target, Scale } from 'lucide-react';
+import {
+  Plus, X, Home, Minus, Plane, Target, Scale, Settings,
+  Play, Save, ArrowLeft,
+  BarChart4, TrendingUp, AlertTriangle, Crosshair, History, Sparkles,
+} from 'lucide-react';
 
-// ─── Metrics ───
-const METRICS = [
-  { id: 'xg', name: 'Expected Goals (xG)', icon: '📊' },
-  { id: 'form', name: 'Recent Form', icon: '🔥' },
-  { id: 'h2h', name: 'H2H Win Rate', icon: '⚔️' },
-  { id: 'possession', name: 'Possession %', icon: '🎮' },
-  { id: 'injuries', name: 'Squad Health', icon: '🏥' },
+// ═══════════════════════════════════════════
+// CATEGORIES (from h2h page + AI)
+// ═══════════════════════════════════════════
+const CATEGORIES = [
+  {
+    id: 'quality',
+    name: 'Quality & Efficiency',
+    icon: BarChart4,
+    color: '#3b82f6',
+    metrics: [
+      { id: 'rank', name: 'League Rank', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'xg', name: 'Expected Goals (xG)', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'xga', name: 'Expected Goals Against (xGA)', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'conv', name: 'Conversion Rate', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'finishing', name: 'Finishing Efficiency Index', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'sustainability', name: 'Performance Sustainability Index', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'poss', name: 'Possession %', category: 'Quality & Efficiency', color: '#3b82f6' },
+      { id: 'sot', name: 'Shots on Target', category: 'Quality & Efficiency', color: '#3b82f6' },
+    ],
+  },
+  {
+    id: 'form',
+    name: 'Momentum & Form',
+    icon: TrendingUp,
+    color: '#f59e0b',
+    metrics: [
+      { id: 'form', name: 'Last 5 Results', category: 'Momentum & Form', color: '#f59e0b' },
+      { id: 'momentum', name: 'Form Momentum Score', category: 'Momentum & Form', color: '#f59e0b' },
+      { id: 'winpct', name: 'Win %', category: 'Momentum & Form', color: '#f59e0b' },
+      { id: 'gf', name: 'Goals Scored (L5)', category: 'Momentum & Form', color: '#f59e0b' },
+      { id: 'ga', name: 'Goals Conceded (L5)', category: 'Momentum & Form', color: '#f59e0b' },
+      { id: 'unb', name: 'Unbeaten Run', category: 'Momentum & Form', color: '#f59e0b' },
+    ],
+  },
+  {
+    id: 'health',
+    name: 'Squad Health',
+    icon: AlertTriangle,
+    color: '#ef4444',
+    metrics: [
+      { id: 'abs', name: 'Absences', category: 'Squad Health', color: '#ef4444' },
+      { id: 'rest', name: 'Days Rest', category: 'Squad Health', color: '#ef4444' },
+      { id: 'travel', name: 'Travel Distance', category: 'Squad Health', color: '#ef4444' },
+    ],
+  },
+  {
+    id: 'tactical',
+    name: 'Tactical',
+    icon: Crosshair,
+    color: '#8b5cf6',
+    metrics: [
+      { id: 'setpiece', name: 'Set Piece xG', category: 'Tactical', color: '#8b5cf6' },
+      { id: 'defensive', name: 'Defensive Activity Score', category: 'Tactical', color: '#8b5cf6' },
+      { id: 'clean', name: 'Clean Sheet %', category: 'Tactical', color: '#8b5cf6' },
+      { id: 'disc', name: 'Discipline (YC/game)', category: 'Tactical', color: '#8b5cf6' },
+      { id: 'homewin', name: 'Home Win% / Away Win%', category: 'Tactical', color: '#8b5cf6' },
+      { id: 'homedraw', name: 'Home Draw% / Away Draw%', category: 'Tactical', color: '#8b5cf6' },
+    ],
+  },
+  {
+    id: 'h2h',
+    name: 'H2H',
+    icon: History,
+    color: '#14b8a6',
+    metrics: [
+      { id: 'h2h', name: 'Head-to-Head Record', category: 'H2H', color: '#14b8a6' },
+      { id: 'h2hform', name: 'Recent H2H Form', category: 'H2H', color: '#14b8a6' },
+    ],
+  },
+  {
+    id: 'ai',
+    name: 'AI Insights',
+    icon: Sparkles,
+    color: '#ec4899',
+    metrics: [
+      { id: 'ai_pred', name: 'AI Match Prediction', category: 'AI Insights', color: '#ec4899' },
+      { id: 'ai_value', name: 'AI Value Analysis', category: 'AI Insights', color: '#ec4899' },
+      { id: 'ai_pattern', name: 'AI Pattern Recognition', category: 'AI Insights', color: '#ec4899' },
+    ],
+  },
 ];
 
-// ─── Branches ───
-const BRANCHES = ['home', 'draw', 'away'];
+function findCategoryForMetric(metricId) {
+  for (const cat of CATEGORIES) {
+    if (cat.metrics.find((m) => m.id === metricId)) return cat;
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════
+// BRANCHES
+// ═══════════════════════════════════════════
+const BRANCHES_LIST = ['home', 'draw', 'away'];
 const BRANCH_META = {
   home: { label: 'Home', color: '#10b981', emoji: '🏠' },
   draw: { label: 'Draw', color: '#64748b', emoji: '🤝' },
   away: { label: 'Away', color: '#f59e0b', emoji: '✈️' },
 };
 
-// ─── Layout ───
+const branches = [
+  { id: 'home', name: 'HOME WIN', color: '#10b981', icon: Home },
+  { id: 'draw', name: 'DRAW', color: '#94a3b8', icon: Minus },
+  { id: 'away', name: 'AWAY WIN', color: '#f59e0b', icon: Plane }
+];
+
+// ═══════════════════════════════════════════
+// LAYOUT
+// ═══════════════════════════════════════════
 const START_X = 300;
 const START_Y = 30;
 const FIRST_STEP_Y = 160;
 const STEP_GAP = 120;
 const BRANCH_SPACING = 280;
+function bx(i) { return START_X + (i - 1) * BRANCH_SPACING; }
 
-function bx(i) {
-  return START_X + (i - 1) * BRANCH_SPACING;
-}
-
-// ─── Dark mode detection ───
+// ═══════════════════════════════════════════
+// DARK MODE
+// ═══════════════════════════════════════════
 function useDarkMode() {
   const [dark, setDark] = useState(false);
   useEffect(() => {
@@ -57,24 +150,34 @@ function useDarkMode() {
   return dark;
 }
 
-// ─── Theme CSS (injected once) ───
+// ═══════════════════════════════════════════
+// THEME CSS
+// ═══════════════════════════════════════════
 const THEME_CSS = `
   .react-flow__node-startNode,
   .react-flow__node-stepNode {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
-    padding: 8px 14px;
+    padding: 8px 16px;
     font-size: 12px;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
     cursor: pointer;
+    color: #1e293b;
   }
   .react-flow__node-stepNode {
     overflow: visible !important;
   }
   .react-flow__node.selected {
     border-color: #3b82f6 !important;
-    box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
+    box-shadow: 0 0 0 2.5px rgba(59,130,246,0.18);
+  }
+  .react-flow__handle {
+    opacity: 0 !important;
+    width: 6px !important;
+    height: 6px !important;
+    pointer-events: none !important;
   }
   .dark .react-flow__node-startNode,
   .dark .react-flow__node-stepNode {
@@ -82,10 +185,6 @@ const THEME_CSS = `
     border-color: rgba(148,163,184,0.2);
     color: #e2e8f0;
     box-shadow: 0 1px 4px rgba(0,0,0,0.3);
-  }
-  .dark .react-flow__handle {
-    background: #475569;
-    border-color: #64748b;
   }
   .dark .react-flow__controls button {
     background: #1e293b;
@@ -100,8 +199,8 @@ const THEME_CSS = `
   }
   .rf-add-btn {
     background: #f1f5f9;
-    color: #94a3b8;
-    border: 1px solid #e2e8f0;
+    color: #64748b;
+    border: 1.5px dashed #cbd5e1;
     transition: all 0.15s;
   }
   .rf-add-btn:hover {
@@ -110,9 +209,9 @@ const THEME_CSS = `
     border-color: #93c5fd;
   }
   .dark .rf-add-btn {
-    background: #1e293b;
+    background: rgba(30,41,59,0.9);
     color: #64748b;
-    border: 1px solid #334155;
+    border-color: #334155;
   }
   .dark .rf-add-btn:hover {
     background: rgba(59,130,246,0.15);
@@ -121,155 +220,180 @@ const THEME_CSS = `
   }
 `;
 
-// ═══════════════════════════════
+// ═══════════════════════════════════════════
 // START NODE
-// ═══════════════════════════════
+// ═══════════════════════════════════════════
 function StartNode() {
   return (
     <>
-      <div style={{ fontSize: 12, fontWeight: 600 }}>Start</div>
+      <span>Start</span>
       <Handle type="source" position={Position.Bottom} />
     </>
   );
 }
 
-// ═══════════════════════════════
-// STEP NODE (with + button below)
-// ═══════════════════════════════
+// ═══════════════════════════════════════════
+// STEP NODE
+// ═══════════════════════════════════════════
 function StepNode({ data }) {
   const hasMetric = !!data.metric;
+  const cat = hasMetric ? findCategoryForMetric(data.metric.id) : null;
+  const CatIcon = cat?.icon;
+  const isLast = data.isLastStep;
 
   return (
     <div style={{ position: 'relative' }}>
       <Handle type="target" position={Position.Top} />
-
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 6,
-          fontSize: 12,
-          whiteSpace: 'nowrap',
-        }}
-      >
-        {hasMetric ? (
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap' }}>
+        {hasMetric && CatIcon ? (
           <>
-            <span style={{ fontSize: 14 }}>{data.metric.icon}</span>
+            <CatIcon size={13} style={{ color: cat.color, flexShrink: 0 }} />
             <span>{data.metric.name}</span>
           </>
         ) : (
-          <span style={{ opacity: 0.4 }}>Select metric</span>
+          <span style={{ opacity: 0.4, fontStyle: 'italic' }}>Select metric</span>
         )}
       </div>
-
       <Handle type="source" position={Position.Bottom} />
-
-      {/* + button centered below node on the edge line */}
-      <button
-        className="nopan nodrag rf-add-btn"
-        onClick={(e) => {
-          e.stopPropagation();
-          if (data.onAddAfter) data.onAddAfter(data.stepIndex);
-        }}
-        style={{
-          position: 'absolute',
-          bottom: -28,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: 18,
-          height: 18,
-          borderRadius: '50%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: 14,
-          fontWeight: 700,
-          cursor: 'pointer',
-          zIndex: 10,
-          lineHeight: 1,
-          padding: 0,
-        }}
-      >
-        +
-      </button>
+      {isLast && (
+        <button
+          className="nopan nodrag rf-add-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (data.onAddAfter) data.onAddAfter(data.stepIndex);
+          }}
+          style={{
+            position: 'absolute',
+            bottom: -30,
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 20,
+            height: 20,
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 15,
+            fontWeight: 700,
+            cursor: 'pointer',
+            zIndex: 10,
+            lineHeight: 1,
+            padding: 0,
+          }}
+        >
+          +
+        </button>
+      )}
     </div>
   );
 }
 
 const nodeTypes = { startNode: StartNode, stepNode: StepNode };
 
-// ═══════════════════════════════
-// MAIN STUDIO COMPONENT
-// ═══════════════════════════════
+// ═══════════════════════════════════════════
+// STUDIO INNER (ReactFlow canvas + state)
+// ═══════════════════════════════════════════
 function StudioInner() {
   const { fitView } = useReactFlow();
   const isDark = useDarkMode();
 
-  // ─── State ───
+  const [maxPercentage, setMaxPercentage] = useState(50);
+
   const [steps, setSteps] = useState([
     {
-      id: 'step-1',
+      id: 1,
       metric: null,
-      branchConfig: {
-        home: { edgeType: 'match', weight: 5 },
-        draw: { edgeType: 'match', weight: 5 },
-        away: { edgeType: 'match', weight: 5 },
-      },
-    },
+      homeMin: -50, homeMax: -15, homeMinIsArrow: true,
+      drawMin: -10, drawMax: 10,
+      awayMin: 15, awayMax: 50, awayMaxIsArrow: true,
+    }
   ]);
 
-  const [metricModal, setMetricModal] = useState(null);
-  const [nodeModal, setNodeModal] = useState(null);
-  const [edgeModal, setEdgeModal] = useState(null);
+  const [branchConfigs, setBranchConfigs] = useState({
+    home: { 1: { edgeType: 'match', weight: 5 } },
+    draw: { 1: { edgeType: 'match', weight: 5 } },
+    away: { 1: { edgeType: 'match', weight: 5 } }
+  });
+
+  const [showMetricModal, setShowMetricModal] = useState(false);
+  const [showConfigModal, setShowConfigModal] = useState(false);
+  const [editingStep, setEditingStep] = useState(null);
+  const [configTarget, setConfigTarget] = useState(null);
 
   const stepsRef = useRef(steps);
   stepsRef.current = steps;
 
-  // ─── Actions ───
+  // ─── Step actions ───
+  const addStep = useCallback(() => {
+    const newId = stepsRef.current.length > 0
+      ? Math.max(...stepsRef.current.map(s => s.id)) + 1
+      : 1;
+    setSteps(prev => [...prev, {
+      id: newId,
+      metric: null,
+      homeMin: -maxPercentage, homeMax: -15, homeMinIsArrow: true,
+      drawMin: -10, drawMax: 10,
+      awayMin: 15, awayMax: maxPercentage, awayMaxIsArrow: true
+    }]);
+    setBranchConfigs(prev => ({
+      home: { ...prev.home, [newId]: { edgeType: 'match', weight: 5 } },
+      draw: { ...prev.draw, [newId]: { edgeType: 'match', weight: 5 } },
+      away: { ...prev.away, [newId]: { edgeType: 'match', weight: 5 } }
+    }));
+  }, [maxPercentage]);
+
   const addStepAfter = useCallback((index) => {
-    setSteps((prev) => {
-      const next = [...prev];
-      next.splice(index + 1, 0, {
-        id: 'step-' + Date.now(),
-        metric: null,
-        branchConfig: {
-          home: { edgeType: 'match', weight: 5 },
-          draw: { edgeType: 'match', weight: 5 },
-          away: { edgeType: 'match', weight: 5 },
-        },
-      });
-      return next;
-    });
-  }, []);
+    addStep();
+  }, [addStep]);
 
-  const deleteStep = useCallback((stepId) => {
-    setSteps((prev) => (prev.length > 1 ? prev.filter((s) => s.id !== stepId) : prev));
-  }, []);
-
-  const pickMetric = useCallback(
-    (metric) => {
-      if (!metricModal) return;
-      setSteps((prev) =>
-        prev.map((s) => (s.id === metricModal.stepId ? { ...s, metric } : s))
-      );
-      setMetricModal(null);
-    },
-    [metricModal]
-  );
-
-  const updateEdgeConfig = useCallback((stepId, branch, field, value) => {
-    setSteps((prev) =>
-      prev.map((s) => {
-        if (s.id !== stepId) return s;
-        return {
-          ...s,
-          branchConfig: {
-            ...s.branchConfig,
-            [branch]: { ...s.branchConfig[branch], [field]: value },
-          },
+  const removeStep = useCallback((stepId) => {
+    if (stepsRef.current.length > 1) {
+      setSteps(prev => prev.filter(s => s.id !== stepId));
+      setBranchConfigs(prev => {
+        const nc = {
+          home: { ...prev.home },
+          draw: { ...prev.draw },
+          away: { ...prev.away }
         };
-      })
-    );
+        delete nc.home[stepId];
+        delete nc.draw[stepId];
+        delete nc.away[stepId];
+        return nc;
+      });
+    }
+  }, []);
+
+  const updateStep = useCallback((stepId, updates) => {
+    setSteps(prev => prev.map(step =>
+      step.id === stepId ? { ...step, ...updates } : step
+    ));
+  }, []);
+
+  const updateBranchConfig = useCallback((branch, stepId, field, value) => {
+    setBranchConfigs(prev => ({
+      ...prev,
+      [branch]: {
+        ...prev[branch],
+        [stepId]: {
+          ...prev[branch][stepId],
+          [field]: value
+        }
+      }
+    }));
+  }, []);
+
+  const selectMetric = useCallback((metric) => {
+    updateStep(editingStep, { metric });
+    setShowMetricModal(false);
+    setEditingStep(null);
+    if (configTarget) {
+      setShowConfigModal(true);
+    }
+  }, [editingStep, configTarget, updateStep]);
+
+  const openStepConfig = useCallback((stepId, branch) => {
+    setConfigTarget({ stepId, branch });
+    setShowConfigModal(true);
   }, []);
 
   // ─── Build nodes & edges ───
@@ -285,12 +409,13 @@ function StudioInner() {
       draggable: true,
     });
 
-    BRANCHES.forEach((branch, bi) => {
+    BRANCHES_LIST.forEach((branch, bi) => {
       const x = bx(bi);
       const meta = BRANCH_META[branch];
 
       steps.forEach((step, si) => {
-        const nodeId = step.id + '-' + branch;
+        const nodeId = 'node-' + step.id + '-' + branch;
+        const isLastStep = si === steps.length - 1;
 
         ns.push({
           id: nodeId,
@@ -301,34 +426,33 @@ function StudioInner() {
             stepId: step.id,
             stepIndex: si,
             metric: step.metric,
+            isLastStep,
             onAddAfter: addStepAfter,
           },
           draggable: true,
         });
 
         if (si === 0) {
-          // Branch edge: start -> first step
           es.push({
             id: 'e-start-' + branch,
             source: 'start',
             target: nodeId,
             type: 'default',
             label: meta.emoji + ' ' + meta.label,
-            labelStyle: { fontSize: 10, fontWeight: 600, fill: meta.color },
+            labelStyle: { fontSize: 11, fontWeight: 700, fill: meta.color },
             labelBgStyle: {
               fill: isDark ? '#0f172a' : '#ffffff',
-              fillOpacity: 0.9,
+              fillOpacity: 0.95,
             },
-            labelBgPadding: [4, 6],
-            labelBgBorderRadius: 4,
+            labelBgPadding: [6, 8],
+            labelBgBorderRadius: 6,
             style: { stroke: meta.color, strokeWidth: 2 },
           });
         } else {
-          // Step edge: prev -> this (with edge type indicator)
-          const prevId = steps[si - 1].id + '-' + branch;
-          const cfg = step.branchConfig[branch];
-          const indicator =
-            cfg.edgeType === 'match' ? '🎯' : '⚖️ ' + cfg.weight;
+          const prevId = 'node-' + steps[si - 1].id + '-' + branch;
+          const cfg = branchConfigs[branch]?.[step.id] || { edgeType: 'match', weight: 5 };
+          const isMatch = cfg.edgeType === 'match';
+          const indicator = isMatch ? '🎯 match' : '⚖️ wt: ' + cfg.weight;
 
           es.push({
             id: 'e-' + prevId + '-' + nodeId,
@@ -336,13 +460,20 @@ function StudioInner() {
             target: nodeId,
             type: 'default',
             label: indicator,
-            labelStyle: { fontSize: 11, cursor: 'pointer' },
-            labelBgStyle: {
-              fill: isDark ? '#0f172a' : '#ffffff',
-              fillOpacity: 0.9,
+            labelStyle: {
+              fontSize: 10,
+              fontWeight: 600,
+              fill: isDark ? '#cbd5e1' : '#475569',
+              cursor: 'pointer',
             },
-            labelBgPadding: [3, 5],
-            labelBgBorderRadius: 4,
+            labelBgStyle: {
+              fill: isDark
+                ? isMatch ? 'rgba(30,58,138,0.6)' : 'rgba(76,29,149,0.5)'
+                : isMatch ? 'rgba(219,234,254,0.95)' : 'rgba(237,233,254,0.95)',
+              fillOpacity: 1,
+            },
+            labelBgPadding: [4, 7],
+            labelBgBorderRadius: 6,
             style: { stroke: meta.color, strokeWidth: 1.5 },
             data: { stepId: step.id, branch },
           });
@@ -351,19 +482,17 @@ function StudioInner() {
     });
 
     return { builtNodes: ns, builtEdges: es };
-  }, [steps, isDark, addStepAfter]);
+  }, [steps, branchConfigs, isDark, addStepAfter]);
 
   const [nodes, setNodes, onNodesChange] = useNodesState(builtNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(builtEdges);
 
-  // Sync when steps/theme change
   useEffect(() => {
     setNodes(builtNodes);
     setEdges(builtEdges);
     setTimeout(() => fitView({ padding: 0.2, duration: 200 }), 50);
   }, [builtNodes, builtEdges, setNodes, setEdges, fitView]);
 
-  // Fit on mount
   useEffect(() => {
     setTimeout(() => fitView({ padding: 0.2, duration: 0 }), 200);
   }, [fitView]);
@@ -374,72 +503,60 @@ function StudioInner() {
     const step = stepsRef.current.find((s) => s.id === node.data.stepId);
     if (!step) return;
     if (!step.metric) {
-      setMetricModal({ stepId: node.data.stepId, branch: node.data.branch });
+      setEditingStep(node.data.stepId);
+      setConfigTarget({ stepId: node.data.stepId, branch: node.data.branch });
+      setShowMetricModal(true);
     } else {
-      setNodeModal({ stepId: node.data.stepId, branch: node.data.branch });
+      openStepConfig(node.data.stepId, node.data.branch);
     }
-  }, []);
+  }, [openStepConfig]);
 
   const onEdgeClick = useCallback((_, edge) => {
-    if (edge.data && edge.data.stepId) {
-      setEdgeModal({ stepId: edge.data.stepId, branch: edge.data.branch });
+    if (edge.data?.stepId) {
+      openStepConfig(edge.data.stepId, edge.data.branch);
     }
-  }, []);
-
-  // ─── Modal data ───
-  const nodeStep = nodeModal ? steps.find((s) => s.id === nodeModal.stepId) : null;
-  const nodeEdgeCfg =
-    nodeStep && nodeModal ? nodeStep.branchConfig[nodeModal.branch] : null;
-  const edgeStep = edgeModal ? steps.find((s) => s.id === edgeModal.stepId) : null;
-  const edgeCfg =
-    edgeStep && edgeModal ? edgeStep.branchConfig[edgeModal.branch] : null;
+  }, [openStepConfig]);
 
   return (
     <div className="w-full space-y-3">
       <style>{THEME_CSS}</style>
 
-      {/* ─── Toolbar ─── */}
-      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-800">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-slate-900/80 border border-gray-200 dark:border-slate-700/50">
         <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500">
           Strategy Studio
         </span>
         <div className="flex items-center gap-1.5">
+          <MaxPercentageControl value={maxPercentage} onChange={setMaxPercentage} />
           <button
-            onClick={() => addStepAfter(steps.length - 1)}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-900 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
+            onClick={addStep}
+            className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors"
           >
             <Plus size={12} /> Step
           </button>
-          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-900 transition-colors">
+          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 transition-colors">
             <Play size={11} /> Run
           </button>
-          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 transition-colors">
+          <button className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 transition-colors">
             <Save size={11} /> Save
           </button>
         </div>
       </div>
 
-      {/* ─── Canvas ─── */}
+      {/* Canvas */}
       <div
-        className="rounded-xl overflow-hidden border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950"
+        className="rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700/50 bg-white dark:bg-slate-950"
         style={{ height: 550, position: 'relative' }}
       >
-        {/* Pinned context — translucent top right */}
         <div
-          className="text-gray-300 dark:text-slate-700"
+          className="text-gray-300/60 dark:text-slate-600/80"
           style={{
-            position: 'absolute',
-            top: 12,
-            right: 16,
-            zIndex: 10,
-            pointerEvents: 'none',
-            fontSize: 10,
-            fontWeight: 600,
-            textAlign: 'right',
+            position: 'absolute', top: 14, right: 20, zIndex: 10,
+            pointerEvents: 'none', fontWeight: 700, textAlign: 'right',
           }}
         >
-          <div>Jackpot #12345</div>
-          <div style={{ marginTop: 2, fontSize: 9 }}>17 matches</div>
+          <div style={{ fontSize: 14 }}>Jackpot #12345</div>
+          <div style={{ fontSize: 12, marginTop: 2 }}>17 matches</div>
         </div>
 
         <ReactFlow
@@ -460,11 +577,7 @@ function StudioInner() {
           minZoom={0.3}
           maxZoom={2.5}
         >
-          <Background
-            color={isDark ? 'rgba(255,255,255,0.03)' : '#f1f5f9'}
-            gap={20}
-            size={1}
-          />
+          <Background color={isDark ? 'rgba(148,163,184,0.04)' : '#e2e8f0'} gap={20} size={1} />
           <Controls showInteractive={false} />
           <MiniMap
             nodeColor={(n) => {
@@ -475,290 +588,1080 @@ function StudioInner() {
         </ReactFlow>
       </div>
 
-      {/* ═══════════ MODALS ═══════════ */}
-
-      {/* Metric Picker */}
-      {metricModal && (
-        <Overlay onClose={() => setMetricModal(null)}>
-          <ModalCard title="Select Metric">
-            <div className="flex flex-col gap-1.5">
-              {METRICS.map((m) => (
-                <button
-                  key={m.id}
-                  onClick={() => pickMetric(m)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors
-                    bg-gray-50 dark:bg-slate-800/60
-                    border border-gray-200 dark:border-slate-700
-                    hover:border-blue-300 dark:hover:border-blue-800
-                    hover:bg-blue-50 dark:hover:bg-blue-950/30"
-                >
-                  <span className="text-lg">{m.icon}</span>
-                  <span className="text-sm font-medium text-gray-800 dark:text-slate-200">
-                    {m.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </ModalCard>
-        </Overlay>
+      {/* ─── Modals ─── */}
+      {showMetricModal && (
+        <MetricSelectorModal
+          categories={CATEGORIES}
+          onSelect={selectMetric}
+          onClose={() => {
+            setShowMetricModal(false);
+            setEditingStep(null);
+            setConfigTarget(null);
+          }}
+        />
       )}
 
-      {/* Node Config (metric + edge config + delete) */}
-      {nodeModal && nodeStep && nodeEdgeCfg && (
-        <Overlay onClose={() => setNodeModal(null)}>
-          <ModalCard
-            title={
-              (nodeStep.metric?.icon || '') +
-              ' ' +
-              (nodeStep.metric?.name || 'Configure Step')
-            }
-          >
-            <div className="space-y-5">
-              {/* Change metric */}
-              <div>
-                <label className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-2">
-                  Metric
-                </label>
-                <select
-                  value={nodeStep.metric?.id || ''}
-                  onChange={(e) => {
-                    const m = METRICS.find((x) => x.id === e.target.value);
-                    if (m) {
-                      setSteps((prev) =>
-                        prev.map((s) =>
-                          s.id === nodeModal.stepId ? { ...s, metric: m } : s
-                        )
-                      );
-                    }
-                  }}
-                  className="w-full px-3 py-2.5 rounded-lg text-sm
-                    bg-white dark:bg-slate-800
-                    border border-gray-300 dark:border-slate-600
-                    text-gray-800 dark:text-slate-200
-                    focus:outline-none focus:ring-2 focus:ring-blue-500/30"
-                >
-                  {METRICS.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.icon} {m.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Edge type for this branch */}
-              <div>
-                <label className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-2">
-                  Edge — {BRANCH_META[nodeModal.branch]?.emoji}{' '}
-                  {BRANCH_META[nodeModal.branch]?.label}
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['match', 'weight'].map((type) => {
-                    const active = nodeEdgeCfg.edgeType === type;
-                    const isMatch = type === 'match';
-                    return (
-                      <button
-                        key={type}
-                        onClick={() =>
-                          updateEdgeConfig(
-                            nodeModal.stepId,
-                            nodeModal.branch,
-                            'edgeType',
-                            type
-                          )
-                        }
-                        className={
-                          'flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all border ' +
-                          (active
-                            ? isMatch
-                              ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-400 dark:border-blue-700 text-blue-600 dark:text-blue-400'
-                              : 'bg-purple-50 dark:bg-purple-950/30 border-purple-400 dark:border-purple-700 text-purple-600 dark:text-purple-400'
-                            : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-500')
-                        }
-                      >
-                        {isMatch ? <Target size={16} /> : <Scale size={16} />}
-                        {isMatch ? 'Match' : 'Weight'}
-                        <span className="text-[9px] font-normal opacity-60">
-                          {isMatch ? 'Pass / Fail' : 'Adds points'}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Weight slider */}
-              {nodeEdgeCfg.edgeType === 'weight' && (
-                <div>
-                  <label className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-2">
-                    Weight: {nodeEdgeCfg.weight}
-                  </label>
-                  <input
-                    type="range"
-                    min={0}
-                    max={10}
-                    value={nodeEdgeCfg.weight}
-                    onChange={(e) =>
-                      updateEdgeConfig(
-                        nodeModal.stepId,
-                        nodeModal.branch,
-                        'weight',
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="w-full accent-purple-500"
-                  />
-                  <div className="flex justify-between text-[9px] text-gray-400 dark:text-slate-600 mt-1">
-                    <span>0</span>
-                    <span>5</span>
-                    <span>10</span>
-                  </div>
-                  {nodeEdgeCfg.weight === 0 && (
-                    <div className="mt-2 text-[10px] font-semibold text-center text-amber-500 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg py-1.5">
-                      ⚠️ Weight 0 = This step will be skipped
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Delete */}
-              {steps.length > 1 && (
-                <button
-                  onClick={() => {
-                    deleteStep(nodeModal.stepId);
-                    setNodeModal(null);
-                  }}
-                  className="w-full py-2.5 rounded-lg text-xs font-semibold transition-colors
-                    bg-red-50 dark:bg-red-950/20
-                    text-red-500 dark:text-red-400
-                    border border-red-200 dark:border-red-900
-                    hover:bg-red-100 dark:hover:bg-red-900/30"
-                >
-                  Delete Step
-                </button>
-              )}
-            </div>
-          </ModalCard>
-        </Overlay>
-      )}
-
-      {/* Edge Config Modal (quick toggle from edge click) */}
-      {edgeModal && edgeCfg && (
-        <Overlay onClose={() => setEdgeModal(null)}>
-          <ModalCard
-            title={
-              'Edge — ' +
-              (BRANCH_META[edgeModal.branch]?.emoji || '') +
-              ' ' +
-              (BRANCH_META[edgeModal.branch]?.label || '')
-            }
-          >
-            <div className="space-y-4">
-              <div>
-                <label className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-2">
-                  Type
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {['match', 'weight'].map((type) => {
-                    const active = edgeCfg.edgeType === type;
-                    const isMatch = type === 'match';
-                    return (
-                      <button
-                        key={type}
-                        onClick={() =>
-                          updateEdgeConfig(
-                            edgeModal.stepId,
-                            edgeModal.branch,
-                            'edgeType',
-                            type
-                          )
-                        }
-                        className={
-                          'flex flex-col items-center gap-1.5 py-3 rounded-lg text-xs font-semibold transition-all border ' +
-                          (active
-                            ? isMatch
-                              ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-400 dark:border-blue-700 text-blue-600 dark:text-blue-400'
-                              : 'bg-purple-50 dark:bg-purple-950/30 border-purple-400 dark:border-purple-700 text-purple-600 dark:text-purple-400'
-                            : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 dark:text-slate-500')
-                        }
-                      >
-                        {isMatch ? <Target size={16} /> : <Scale size={16} />}
-                        {isMatch ? 'Match' : 'Weight'}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {edgeCfg.edgeType === 'weight' && (
-                <div>
-                  <label className="block text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-slate-500 mb-2">
-                    Weight: {edgeCfg.weight}
-                  </label>
-                  <input
-                    type="range"
-                    min={0}
-                    max={10}
-                    value={edgeCfg.weight}
-                    onChange={(e) =>
-                      updateEdgeConfig(
-                        edgeModal.stepId,
-                        edgeModal.branch,
-                        'weight',
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="w-full accent-purple-500"
-                  />
-                  {edgeCfg.weight === 0 && (
-                    <div className="mt-2 text-[10px] font-semibold text-center text-amber-500">
-                      ⚠️ Weight 0 = step skipped
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </ModalCard>
-        </Overlay>
+      {showConfigModal && configTarget && (
+        <StepConfigModal
+          step={steps.find(s => s.id === configTarget.stepId)}
+          branch={branches.find(b => b.id === configTarget.branch)}
+          config={branchConfigs[configTarget.branch][configTarget.stepId]}
+          maxPercentage={maxPercentage}
+          onUpdateMaxPercentage={setMaxPercentage}
+          onUpdateStep={(updates) => updateStep(configTarget.stepId, updates)}
+          onUpdateConfig={(field, value) => updateBranchConfig(configTarget.branch, configTarget.stepId, field, value)}
+          onClose={() => {
+            setShowConfigModal(false);
+            setConfigTarget(null);
+          }}
+          onDelete={() => {
+            removeStep(configTarget.stepId);
+            setShowConfigModal(false);
+            setConfigTarget(null);
+          }}
+          onAdd={addStep}
+          canDelete={steps.length > 1}
+        />
       )}
     </div>
   );
 }
 
-// ═══════════════════════════════
-// SHARED MODAL PIECES
-// ═══════════════════════════════
-function Overlay({ children, onClose }) {
+
+// ═══════════════════════════════════════════════════════════════
+// BELOW: User's modal components — kept as provided
+// ═══════════════════════════════════════════════════════════════
+
+const MaxPercentageControl = ({ value, onChange }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value.toString());
+
+  const handleClick = () => {
+    setIsEditing(true);
+    setEditValue(value.toString());
+  };
+
+  const handleBlur = () => {
+    const newValue = parseInt(editValue);
+    if (!isNaN(newValue) && newValue >= 50) {
+      onChange(newValue);
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
+
   return (
-    <div
-      className="fixed inset-0 flex items-center justify-center z-50 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
-      onClick={onClose}
-    >
-      {children}
+    <div style={{ 
+      display: 'flex', 
+      alignItems: 'center', 
+      gap: '12px',
+      marginLeft: 'auto',
+      padding: '8px 16px',
+      background: 'rgba(59, 130, 246, 0.1)',
+      border: '1px solid rgba(59, 130, 246, 0.3)',
+      borderRadius: '8px'
+    }}>
+      <label style={{
+        fontSize: '12px',
+        fontWeight: 700,
+        color: '#94a3b8',
+        textTransform: 'uppercase',
+        letterSpacing: '0.5px'
+      }}>
+        Max %:
+      </label>
+      {isEditing ? (
+        <input
+          type="number"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoFocus
+          min="50"
+          style={{
+            width: '60px',
+            padding: '4px 8px',
+            background: 'rgba(15, 23, 42, 0.8)',
+            border: '1px solid #60a5fa',
+            borderRadius: '6px',
+            color: '#60a5fa',
+            fontSize: '13px',
+            fontWeight: 700,
+            textAlign: 'center'
+          }}
+        />
+      ) : (
+        <div
+          onClick={handleClick}
+          style={{
+            padding: '4px 12px',
+            background: 'rgba(15, 23, 42, 0.8)',
+            border: '1px solid rgba(148, 163, 184, 0.3)',
+            borderRadius: '6px',
+            color: '#60a5fa',
+            fontSize: '13px',
+            fontWeight: 700,
+            cursor: 'pointer',
+            minWidth: '40px',
+            textAlign: 'center'
+          }}
+        >
+          {value}
+        </div>
+      )}
     </div>
   );
-}
+};
 
-function ModalCard({ title, children }) {
+const generatePlainEnglish = (step, branchId, config, simplified = false) => {
+  const metricName = step.metric.name.toLowerCase();
+  let statement = '';
+  
+  if (branchId === 'home') {
+    const homeMin = step.homeMin;
+    const homeMax = step.homeMax;
+    const isArrow = step.homeMinIsArrow;
+    
+    if (homeMin < 0 && homeMax > 0) {
+      const homeAdv = Math.abs(homeMin);
+      const awayAdv = Math.abs(homeMax);
+      if (simplified) {
+        statement = `IF ${metricName} margin is within home advantage limits...`;
+      } else if (config.edgeType === 'match') {
+        statement = `IF the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeAdv}% more than Away Team\n• Away Team is no more than ${awayAdv}% more than Home Team\n→ Proceed\nELSE → Stop`;
+      } else {
+        statement = `Apply ${config.weight} point${config.weight !== 1 ? 's' : ''} if the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeAdv}% more than Away Team\n• Away Team is no more than ${awayAdv}% more than Home Team\nELSE → 0 points`;
+      }
+    } else if (homeMin < 0 && homeMax <= 0) {
+      const threshold = Math.abs(homeMax);
+      const maxAdv = Math.abs(homeMin);
+      if (isArrow) {
+        if (simplified) statement = `IF ${metricName} of Home Team is ${threshold}% or more than that of Away Team...`;
+        else if (config.edgeType === 'match') statement = `IF ${metricName} of Home Team is ${threshold}% or more than that of Away Team\n→ Proceed\nELSE → Stop`;
+        else statement = `IF ${metricName} of Home Team is ${threshold}% or more than that of Away Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+      } else {
+        if (simplified) statement = `IF ${metricName} of Home Team is ${threshold}% to ${maxAdv}% more than that of Away Team...`;
+        else if (config.edgeType === 'match') statement = `IF ${metricName} of Home Team is ${threshold}% to ${maxAdv}% more than that of Away Team\n→ Proceed\nELSE → Stop`;
+        else statement = `IF ${metricName} of Home Team is ${threshold}% to ${maxAdv}% more than that of Away Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+      }
+    } else {
+      const minAdv = Math.abs(homeMin);
+      const maxAdv = Math.abs(homeMax);
+      if (simplified) statement = `IF ${metricName} of Away Team is ${minAdv}% to ${maxAdv}% more than that of Home Team...`;
+      else if (config.edgeType === 'match') statement = `IF ${metricName} of Away Team is ${minAdv}% to ${maxAdv}% more than that of Home Team\n→ Proceed\nELSE → Stop`;
+      else statement = `IF ${metricName} of Away Team is ${minAdv}% to ${maxAdv}% more than that of Home Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+    }
+  } else if (branchId === 'away') {
+    const awayMin = step.awayMin;
+    const awayMax = step.awayMax;
+    const isArrow = step.awayMaxIsArrow;
+    
+    if (awayMin < 0 && awayMax > 0) {
+      const homeAdv = Math.abs(awayMin);
+      const awayAdv = Math.abs(awayMax);
+      if (simplified) statement = `IF ${metricName} margin is within away advantage limits...`;
+      else if (config.edgeType === 'match') statement = `IF the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeAdv}% more than Away Team\n• Away Team is no more than ${awayAdv}% more than Home Team\n→ Proceed\nELSE → Stop`;
+      else statement = `Apply ${config.weight} point${config.weight !== 1 ? 's' : ''} if the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeAdv}% more than Away Team\n• Away Team is no more than ${awayAdv}% more than Home Team\nELSE → 0 points`;
+    } else if (awayMin >= 0 && awayMax > 0) {
+      const threshold = Math.abs(awayMin);
+      const maxAdv = Math.abs(awayMax);
+      if (isArrow) {
+        if (simplified) statement = `IF ${metricName} of Away Team is ${threshold}% or more than that of Home Team...`;
+        else if (config.edgeType === 'match') statement = `IF ${metricName} of Away Team is ${threshold}% or more than that of Home Team\n→ Proceed\nELSE → Stop`;
+        else statement = `IF ${metricName} of Away Team is ${threshold}% or more than that of Home Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+      } else {
+        if (simplified) statement = `IF ${metricName} of Away Team is ${threshold}% to ${maxAdv}% more than that of Home Team...`;
+        else if (config.edgeType === 'match') statement = `IF ${metricName} of Away Team is ${threshold}% to ${maxAdv}% more than that of Home Team\n→ Proceed\nELSE → Stop`;
+        else statement = `IF ${metricName} of Away Team is ${threshold}% to ${maxAdv}% more than that of Home Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+      }
+    } else {
+      const minAdv = Math.abs(awayMax);
+      const maxAdv = Math.abs(awayMin);
+      if (simplified) statement = `IF ${metricName} of Home Team is ${minAdv}% to ${maxAdv}% more than that of Away Team...`;
+      else if (config.edgeType === 'match') statement = `IF ${metricName} of Home Team is ${minAdv}% to ${maxAdv}% more than that of Away Team\n→ Proceed\nELSE → Stop`;
+      else statement = `IF ${metricName} of Home Team is ${minAdv}% to ${maxAdv}% more than that of Away Team\n→ Apply weight: ${config.weight} point${config.weight !== 1 ? 's' : ''}\nELSE → 0 points`;
+    }
+  } else if (branchId === 'draw') {
+    const homeLimit = Math.abs(step.drawMin);
+    const awayLimit = Math.abs(step.drawMax);
+    if (simplified) statement = `IF ${metricName} margin is within draw limits...`;
+    else if (config.edgeType === 'match') statement = `IF the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeLimit}% more than Away Team\n• Away Team is no more than ${awayLimit}% more than Home Team\n→ Proceed\nELSE → Stop`;
+    else statement = `Apply ${config.weight} point${config.weight !== 1 ? 's' : ''} if the ${metricName} margin falls within these limits:\n• Home Team is no more than ${homeLimit}% more than Away Team\n• Away Team is no more than ${awayLimit}% more than Home Team\nELSE → 0 points`;
+  }
+  
+  return statement;
+};
+
+const generatePlainEnglishJSX = (step, branchId, config, simplified = false) => {
+  const metricName = step.metric.name.toLowerCase();
+  
+  if (branchId === 'home') {
+    const homeMin = step.homeMin;
+    const homeMax = step.homeMax;
+    const isArrow = step.homeMinIsArrow;
+    
+    if (homeMin < 0 && homeMax > 0) {
+      const homeAdv = Math.abs(homeMin);
+      const awayAdv = Math.abs(homeMax);
+      if (simplified) return `IF ${metricName} margin is within home advantage limits...`;
+      else if (config.edgeType === 'match') return (<>IF the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeAdv}% more than Away Team<br/>• Away Team is no more than {awayAdv}% more than Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+      else return (<>Apply {config.weight} point{config.weight !== 1 ? 's' : ''} if the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeAdv}% more than Away Team<br/>• Away Team is no more than {awayAdv}% more than Home Team<br/>ELSE → 0 points</>);
+    } else if (homeMin < 0 && homeMax <= 0) {
+      const threshold = Math.abs(homeMax);
+      const maxAdv = Math.abs(homeMin);
+      if (isArrow) {
+        if (simplified) return `IF ${metricName} of Home Team is ${threshold}% or more than that of Away Team...`;
+        else if (config.edgeType === 'match') return (<>IF {metricName} of Home Team is {threshold}% or more than that of Away Team<br/>→ Proceed<br/>ELSE → Stop</>);
+        else return (<>IF {metricName} of Home Team is {threshold}% or more than that of Away Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+      } else {
+        if (simplified) return `IF ${metricName} of Home Team is ${threshold}% to ${maxAdv}% more than that of Away Team...`;
+        else if (config.edgeType === 'match') return (<>IF {metricName} of Home Team is {threshold}% to {maxAdv}% more than that of Away Team<br/>→ Proceed<br/>ELSE → Stop</>);
+        else return (<>IF {metricName} of Home Team is {threshold}% to {maxAdv}% more than that of Away Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+      }
+    } else {
+      const minAdv = Math.abs(homeMin);
+      const maxAdv = Math.abs(homeMax);
+      if (simplified) return `IF ${metricName} of Away Team is ${minAdv}% to ${maxAdv}% more than that of Home Team...`;
+      else if (config.edgeType === 'match') return (<>IF {metricName} of Away Team is {minAdv}% to {maxAdv}% more than that of Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+      else return (<>IF {metricName} of Away Team is {minAdv}% to {maxAdv}% more than that of Home Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+    }
+  } else if (branchId === 'away') {
+    const awayMin = step.awayMin;
+    const awayMax = step.awayMax;
+    const isArrow = step.awayMaxIsArrow;
+    
+    if (awayMin < 0 && awayMax > 0) {
+      const homeAdv = Math.abs(awayMin);
+      const awayAdv = Math.abs(awayMax);
+      if (simplified) return `IF ${metricName} margin is within away advantage limits...`;
+      else if (config.edgeType === 'match') return (<>IF the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeAdv}% more than Away Team<br/>• Away Team is no more than {awayAdv}% more than Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+      else return (<>Apply {config.weight} point{config.weight !== 1 ? 's' : ''} if the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeAdv}% more than Away Team<br/>• Away Team is no more than {awayAdv}% more than Home Team<br/>ELSE → 0 points</>);
+    } else if (awayMin >= 0 && awayMax > 0) {
+      const threshold = Math.abs(awayMin);
+      const maxAdv = Math.abs(awayMax);
+      if (isArrow) {
+        if (simplified) return `IF ${metricName} of Away Team is ${threshold}% or more than that of Home Team...`;
+        else if (config.edgeType === 'match') return (<>IF {metricName} of Away Team is {threshold}% or more than that of Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+        else return (<>IF {metricName} of Away Team is {threshold}% or more than that of Home Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+      } else {
+        if (simplified) return `IF ${metricName} of Away Team is ${threshold}% to ${maxAdv}% more than that of Home Team...`;
+        else if (config.edgeType === 'match') return (<>IF {metricName} of Away Team is {threshold}% to {maxAdv}% more than that of Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+        else return (<>IF {metricName} of Away Team is {threshold}% to {maxAdv}% more than that of Home Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+      }
+    } else {
+      const minAdv = Math.abs(awayMax);
+      const maxAdv = Math.abs(awayMin);
+      if (simplified) return `IF ${metricName} of Home Team is ${minAdv}% to ${maxAdv}% more than that of Away Team...`;
+      else if (config.edgeType === 'match') return (<>IF {metricName} of Home Team is {minAdv}% to {maxAdv}% more than that of Away Team<br/>→ Proceed<br/>ELSE → Stop</>);
+      else return (<>IF {metricName} of Home Team is {minAdv}% to {maxAdv}% more than that of Away Team<br/>→ Apply weight: {config.weight} point{config.weight !== 1 ? 's' : ''}<br/>ELSE → 0 points</>);
+    }
+  } else if (branchId === 'draw') {
+    const homeLimit = Math.abs(step.drawMin);
+    const awayLimit = Math.abs(step.drawMax);
+    if (simplified) return `IF ${metricName} margin is within draw limits...`;
+    else if (config.edgeType === 'match') return (<>IF the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeLimit}% more than Away Team<br/>• Away Team is no more than {awayLimit}% more than Home Team<br/>→ Proceed<br/>ELSE → Stop</>);
+    else return (<>Apply {config.weight} point{config.weight !== 1 ? 's' : ''} if the {metricName} margin falls within these limits:<br/>• Home Team is no more than {homeLimit}% more than Away Team<br/>• Away Team is no more than {awayLimit}% more than Home Team<br/>ELSE → 0 points</>);
+  }
+  
+  return '';
+};
+
+const ScaleLabelControl = ({ value, label, onChange }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editValue, setEditValue] = useState(value.toString());
+  const textAlign = label.includes('Home') ? 'left' : 'right';
+
+  const handleClick = () => {
+    if (onChange) {
+      setIsEditing(true);
+      setEditValue(value.toString());
+    }
+  };
+
+  const handleBlur = () => {
+    if (onChange) {
+      const newValue = parseInt(editValue);
+      if (!isNaN(newValue) && newValue >= 50) {
+        onChange(newValue);
+      }
+    }
+    setIsEditing(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleBlur();
+    } else if (e.key === 'Escape') {
+      setIsEditing(false);
+    }
+  };
+
+  return (
+    <div style={{ textAlign }}>
+      {isEditing ? (
+        <input
+          type="number"
+          value={editValue}
+          onChange={(e) => setEditValue(e.target.value)}
+          onBlur={handleBlur}
+          onKeyDown={handleKeyDown}
+          autoFocus
+          min="50"
+          style={{
+            width: '50px',
+            padding: '2px 4px',
+            background: 'rgba(15, 23, 42, 0.8)',
+            border: '1px solid #60a5fa',
+            borderRadius: '4px',
+            color: '#60a5fa',
+            fontSize: '10px',
+            fontWeight: 700,
+            textAlign: 'center'
+          }}
+        />
+      ) : (
+        <div 
+          onClick={handleClick}
+          style={{ 
+            fontWeight: 700, 
+            color: onChange ? '#60a5fa' : '#94a3b8',
+            cursor: onChange ? 'pointer' : 'default',
+            display: 'inline-block',
+            padding: '2px 4px',
+            borderRadius: '4px',
+            background: onChange ? 'rgba(59, 130, 246, 0.1)' : 'transparent'
+          }}
+        >
+          {value}
+        </div>
+      )}
+      <div style={{ fontSize: '9px', opacity: 0.7 }}>{label}</div>
+    </div>
+  );
+};
+
+const RangeBar = ({ min, max, maxPercentage, color, label }) => {
+  const startPercent = ((min + maxPercentage) / (maxPercentage * 2)) * 100;
+  const endPercent = ((max + maxPercentage) / (maxPercentage * 2)) * 100;
+  
+  return (
+    <div style={{
+      position: 'absolute',
+      top: '27px',
+      left: `${startPercent}%`,
+      width: `${endPercent - startPercent}%`,
+      height: '18px',
+      background: `${color}30`,
+      border: `2px solid ${color}`,
+      borderRadius: '4px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      pointerEvents: 'none'
+    }}>
+      <span style={{
+        fontSize: '8px',
+        fontWeight: 800,
+        color: color,
+        letterSpacing: '0.5px'
+      }}>
+        {label}
+      </span>
+    </div>
+  );
+};
+
+const SliderHandle = ({ value, maxPercentage, color, onMouseDown, active, isArrow, onToggleArrow }) => {
+  const percent = ((value + maxPercentage) / (maxPercentage * 2)) * 100;
+  const displayValue = Math.abs(value);
+  const isLeftSide = value < 0;
+  
   return (
     <div
-      className="rounded-2xl w-full max-w-sm overflow-hidden shadow-xl
-        bg-white dark:bg-slate-900
-        border border-gray-200 dark:border-slate-700"
-      onClick={(e) => e.stopPropagation()}
+      style={{
+        position: 'absolute',
+        top: '35px',
+        left: `${percent}%`,
+        transform: `translate(-50%, -50%) scale(${active ? 1.3 : 1})`,
+        cursor: 'grab',
+        zIndex: active ? 50 : 20,
+        transition: active ? 'none' : 'transform 0.1s ease'
+      }}
     >
-      <div className="px-5 py-3 border-b border-gray-100 dark:border-slate-800">
-        <span className="text-sm font-bold text-gray-900 dark:text-slate-100">
-          {title}
+      {isArrow !== undefined && isArrow ? (
+        <div
+          onMouseDown={onMouseDown}
+          onTouchStart={onMouseDown}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onToggleArrow) {
+              onToggleArrow();
+            }
+          }}
+          style={{
+            position: 'relative',
+            cursor: 'pointer',
+            width: '20px',
+            height: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+        >
+          <div style={{
+            width: '0',
+            height: '0',
+            borderTop: '10px solid transparent',
+            borderBottom: '10px solid transparent',
+            [isLeftSide ? 'borderRight' : 'borderLeft']: `14px solid ${color}`,
+            position: 'relative'
+          }} />
+          <div style={{
+            position: 'absolute',
+            width: '0',
+            height: '0',
+            borderTop: '8px solid transparent',
+            borderBottom: '8px solid transparent',
+            [isLeftSide ? 'borderRight' : 'borderLeft']: '11px solid white',
+            [isLeftSide ? 'left' : 'right']: '3px'
+          }} />
+        </div>
+      ) : isArrow !== undefined ? (
+        <div 
+          onMouseDown={onMouseDown}
+          onTouchStart={onMouseDown}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onToggleArrow) {
+              onToggleArrow();
+            }
+          }}
+          style={{
+            width: '16px',
+            height: '16px',
+            borderRadius: '50%',
+            background: color,
+            border: '3px solid white',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+            cursor: 'pointer'
+          }} 
+        />
+      ) : (
+        <div 
+          onMouseDown={onMouseDown}
+          onTouchStart={onMouseDown}
+          style={{
+            width: '16px',
+            height: '16px',
+            borderRadius: '50%',
+            background: color,
+            border: '3px solid white',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+          }} 
+        />
+      )}
+      
+      {active && (
+        <span style={{
+          position: 'absolute',
+          top: '-26px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          fontSize: '10px',
+          fontWeight: 800,
+          color: 'white',
+          background: color,
+          padding: '3px 8px',
+          borderRadius: '4px',
+          whiteSpace: 'nowrap',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.3)'
+        }}>
+          {displayValue}{isArrow ? '+' : ''}
         </span>
-      </div>
-      <div className="px-5 py-4">{children}</div>
+      )}
     </div>
   );
-}
+};
 
-// ═══════════════════════════════
+const StepConfigModal = ({ step, branch, config, maxPercentage, onUpdateMaxPercentage, onUpdateStep, onUpdateConfig, onClose, onDelete, onAdd, canDelete }) => {
+  const containerRef = useRef(null);
+  const [activeThumb, setActiveThumb] = useState(null);
+  const [activeRange, setActiveRange] = useState(null);
+
+  const handleSliderChange = (sliderName, value) => {
+    const updates = { [sliderName]: value };
+    
+    if (sliderName === 'homeMin' && value > step.homeMax) return;
+    if (sliderName === 'homeMax' && value < step.homeMin) return;
+    if (sliderName === 'drawMin' && value > step.drawMax) return;
+    if (sliderName === 'drawMax' && value < step.drawMin) return;
+    if (sliderName === 'awayMin' && value > step.awayMax) return;
+    if (sliderName === 'awayMax' && value < step.awayMin) return;
+    
+    onUpdateStep(updates);
+  };
+
+  const handleMouseDown = (e, sliderName) => {
+    e.preventDefault();
+    setActiveThumb(sliderName);
+    
+    if (sliderName.startsWith('home')) {
+      setActiveRange('home');
+    } else if (sliderName.startsWith('draw')) {
+      setActiveRange('draw');
+    } else if (sliderName.startsWith('away')) {
+      setActiveRange('away');
+    }
+
+    const moveHandler = (moveEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      const clientX = moveEvent.clientX || (moveEvent.touches && moveEvent.touches[0].clientX);
+      const percentage = ((clientX - rect.left) / rect.width) * 100;
+      const value = Math.round((percentage / 100) * (maxPercentage * 2) - maxPercentage);
+      handleSliderChange(sliderName, value);
+    };
+
+    const upHandler = () => {
+      setActiveThumb(null);
+      window.removeEventListener('mousemove', moveHandler);
+      window.removeEventListener('mouseup', upHandler);
+      window.removeEventListener('touchmove', moveHandler);
+      window.removeEventListener('touchend', upHandler);
+    };
+
+    window.addEventListener('mousemove', moveHandler);
+    window.addEventListener('mouseup', upHandler);
+    window.addEventListener('touchmove', moveHandler, { passive: false });
+    window.addEventListener('touchend', upHandler);
+  };
+
+  const toggleArrow = (arrowField) => {
+    onUpdateStep({ [arrowField]: !step[arrowField] });
+  };
+
+  return (
+    <Modal title={`Configure: ${step.metric?.name || 'Step'} (${branch.name})`} onClose={onClose}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#cbd5e1',
+            marginBottom: '12px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Comparative Ranges
+          </label>
+          
+          <div 
+            ref={containerRef}
+            onClick={(e) => {
+              if (e.target === containerRef.current) {
+                setActiveRange(null);
+              }
+            }}
+            style={{
+              position: 'relative',
+              height: '70px',
+              marginBottom: '12px',
+              userSelect: 'none'
+            }}
+          >
+            <div style={{
+              position: 'absolute',
+              top: '35px',
+              left: 0,
+              right: 0,
+              height: '4px',
+              background: 'rgba(148, 163, 184, 0.2)',
+              borderRadius: '2px'
+            }} />
+
+            <div style={{
+              position: 'absolute',
+              top: '25px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '2px',
+              height: '24px',
+              background: 'rgba(148, 163, 184, 0.5)'
+            }} />
+            <div style={{
+              position: 'absolute',
+              top: '55px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              fontSize: '10px',
+              fontWeight: 700,
+              color: '#64748b'
+            }}>
+              0%
+            </div>
+
+            <RangeBar min={step.homeMin} max={step.homeMax} maxPercentage={maxPercentage} color="#10b981" label="HOME" />
+            <RangeBar min={step.drawMin} max={step.drawMax} maxPercentage={maxPercentage} color="#94a3b8" label="DRAW" />
+            <RangeBar min={step.awayMin} max={step.awayMax} maxPercentage={maxPercentage} color="#f59e0b" label="AWAY" />
+
+            <SliderHandle value={step.homeMin} maxPercentage={maxPercentage} color="#10b981" onMouseDown={(e) => handleMouseDown(e, 'homeMin')} active={activeThumb === 'homeMin'} isArrow={step.homeMinIsArrow} onToggleArrow={() => toggleArrow('homeMinIsArrow')} />
+            <SliderHandle value={step.homeMax} maxPercentage={maxPercentage} color="#10b981" onMouseDown={(e) => handleMouseDown(e, 'homeMax')} active={activeThumb === 'homeMax'} />
+            <SliderHandle value={step.drawMin} maxPercentage={maxPercentage} color="#94a3b8" onMouseDown={(e) => handleMouseDown(e, 'drawMin')} active={activeThumb === 'drawMin'} />
+            <SliderHandle value={step.drawMax} maxPercentage={maxPercentage} color="#94a3b8" onMouseDown={(e) => handleMouseDown(e, 'drawMax')} active={activeThumb === 'drawMax'} />
+            <SliderHandle value={step.awayMin} maxPercentage={maxPercentage} color="#f59e0b" onMouseDown={(e) => handleMouseDown(e, 'awayMin')} active={activeThumb === 'awayMin'} />
+            <SliderHandle value={step.awayMax} maxPercentage={maxPercentage} color="#f59e0b" onMouseDown={(e) => handleMouseDown(e, 'awayMax')} active={activeThumb === 'awayMax'} isArrow={step.awayMaxIsArrow} onToggleArrow={() => toggleArrow('awayMaxIsArrow')} />
+          </div>
+
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontSize: '10px',
+            color: '#64748b',
+            fontWeight: 600,
+            marginBottom: '12px'
+          }}>
+            <ScaleLabelControl value={maxPercentage} label="Home Better" onChange={onUpdateMaxPercentage} />
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontWeight: 700, color: '#94a3b8' }}>0</div>
+              <div style={{ fontSize: '9px', opacity: 0.7 }}>Equal</div>
+            </div>
+            <ScaleLabelControl value={maxPercentage} label="Away Better" onChange={onUpdateMaxPercentage} />
+          </div>
+
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr 1fr',
+            gap: '8px',
+            fontSize: '11px',
+            fontWeight: 700,
+            fontFamily: 'monospace',
+            marginBottom: '12px'
+          }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ fontSize: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#10b981', textAlign: 'center', fontWeight: 800 }}>HOME</div>
+              <div 
+                onClick={() => setActiveRange('home')}
+                style={{
+                  textAlign: 'center', padding: '8px 6px',
+                  background: activeRange === 'home' ? 'rgba(16, 185, 129, 0.3)' : 'rgba(16, 185, 129, 0.1)',
+                  border: activeRange === 'home' ? '2px solid #10b981' : '2px solid transparent',
+                  borderRadius: '6px', color: '#10b981', cursor: 'pointer', transition: 'all 0.2s ease'
+                }}
+              >
+                {step.homeMinIsArrow ? `${Math.abs(step.homeMax)}% or more` : `${Math.abs(step.homeMax)}% to ${Math.abs(step.homeMin)}%`}
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ fontSize: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#94a3b8', textAlign: 'center', fontWeight: 800 }}>DRAW</div>
+              <div 
+                onClick={() => setActiveRange('draw')}
+                style={{
+                  textAlign: 'center', padding: '8px 6px',
+                  background: activeRange === 'draw' ? 'rgba(148, 163, 184, 0.3)' : 'rgba(148, 163, 184, 0.1)',
+                  border: activeRange === 'draw' ? '2px solid #94a3b8' : '2px solid transparent',
+                  borderRadius: '6px', color: '#94a3b8', cursor: 'pointer', transition: 'all 0.2s ease'
+                }}
+              >
+                {Math.abs(step.drawMin)}% ← | → {Math.abs(step.drawMax)}%
+              </div>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div style={{ fontSize: '8px', textTransform: 'uppercase', letterSpacing: '0.5px', color: '#f59e0b', textAlign: 'center', fontWeight: 800 }}>AWAY</div>
+              <div 
+                onClick={() => setActiveRange('away')}
+                style={{
+                  textAlign: 'center', padding: '8px 6px',
+                  background: activeRange === 'away' ? 'rgba(245, 158, 11, 0.3)' : 'rgba(245, 158, 11, 0.1)',
+                  border: activeRange === 'away' ? '2px solid #f59e0b' : '2px solid transparent',
+                  borderRadius: '6px', color: '#f59e0b', cursor: 'pointer', transition: 'all 0.2s ease'
+                }}
+              >
+                {step.awayMaxIsArrow ? `${Math.abs(step.awayMin)}% or more` : `${Math.abs(step.awayMin)}% to ${Math.abs(step.awayMax)}%`}
+              </div>
+            </div>
+          </div>
+
+          {activeRange && step.metric && (
+            <div style={{
+              padding: '12px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              border: '1px solid rgba(59, 130, 246, 0.3)',
+              borderRadius: '8px',
+              fontSize: '12px',
+              color: '#cbd5e1',
+              lineHeight: '1.6',
+              fontFamily: 'monospace'
+            }}>
+              {generatePlainEnglishJSX(step, activeRange, config, false)}
+            </div>
+          )}
+        </div>
+
+        <div>
+          <label style={{
+            display: 'block',
+            fontSize: '12px',
+            fontWeight: 700,
+            color: '#cbd5e1',
+            marginBottom: '10px',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            Edge Type for {branch.name}
+          </label>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <button
+              onClick={() => onUpdateConfig('edgeType', 'match')}
+              style={{
+                padding: '16px',
+                background: config.edgeType === 'match' ? 'rgba(59, 130, 246, 0.25)' : 'rgba(15, 23, 42, 0.6)',
+                border: config.edgeType === 'match' ? '2px solid #3b82f6' : '2px solid rgba(148, 163, 184, 0.2)',
+                borderRadius: '10px',
+                color: config.edgeType === 'match' ? '#60a5fa' : '#94a3b8',
+                fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'
+              }}
+            >
+              <Target size={20} />
+              <span>Match</span>
+              <span style={{ fontSize: '10px', opacity: 0.7, fontWeight: 500 }}>Pass/Fail (stops)</span>
+            </button>
+            <button
+              onClick={() => onUpdateConfig('edgeType', 'weight')}
+              style={{
+                padding: '16px',
+                background: config.edgeType === 'weight' ? 'rgba(139, 92, 246, 0.25)' : 'rgba(15, 23, 42, 0.6)',
+                border: config.edgeType === 'weight' ? '2px solid #8b5cf6' : '2px solid rgba(148, 163, 184, 0.2)',
+                borderRadius: '10px',
+                color: config.edgeType === 'weight' ? '#a78bfa' : '#94a3b8',
+                fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px'
+              }}
+            >
+              <Scale size={20} />
+              <span>Weight</span>
+              <span style={{ fontSize: '10px', opacity: 0.7, fontWeight: 500 }}>Adds points</span>
+            </button>
+          </div>
+        </div>
+
+        {config.edgeType === 'weight' && (
+          <div>
+            <label style={{
+              display: 'block', fontSize: '12px', fontWeight: 700, color: '#cbd5e1',
+              marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '0.5px'
+            }}>
+              Weight Value
+            </label>
+            <div style={{
+              padding: '20px',
+              background: 'rgba(139, 92, 246, 0.15)',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              borderRadius: '10px'
+            }}>
+              <input
+                type="range" min="0" max="10"
+                value={config.weight}
+                onChange={(e) => onUpdateConfig('weight', parseInt(e.target.value))}
+                style={{ width: '100%', accentColor: '#8b5cf6', marginBottom: '12px' }}
+              />
+              <div style={{ textAlign: 'center', fontSize: '36px', fontWeight: 800, color: '#a78bfa' }}>
+                {config.weight}
+              </div>
+              {config.weight === 0 && (
+                <div style={{
+                  marginTop: '12px', padding: '8px',
+                  background: 'rgba(245, 158, 11, 0.15)',
+                  border: '1px solid rgba(245, 158, 11, 0.3)',
+                  borderRadius: '6px', fontSize: '11px', color: '#fbbf24',
+                  textAlign: 'center', fontWeight: 600
+                }}>
+                  ⚠️ Weight 0 = This step will be skipped
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Bottom buttons: Delete + Add */}
+        <div style={{
+          display: 'flex',
+          gap: '12px',
+          paddingTop: '16px',
+          borderTop: '1px solid rgba(148, 163, 184, 0.2)'
+        }}>
+          {canDelete && (
+            <button
+              onClick={onDelete}
+              style={{
+                flex: 1,
+                padding: '12px',
+                background: 'rgba(239, 68, 68, 0.15)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                borderRadius: '8px',
+                color: '#ef4444',
+                fontSize: '13px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '6px'
+              }}
+            >
+              <X size={14} />
+              Delete Step
+            </button>
+          )}
+          <button
+            onClick={() => { onAdd(); onClose(); }}
+            style={{
+              flex: 1,
+              padding: '12px',
+              background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+              border: 'none',
+              borderRadius: '8px',
+              color: 'white',
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
+            }}
+          >
+            <Plus size={14} />
+            Add Step
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+};
+
+const Modal = ({ title, children, onClose, onBack }) => {
+  return (
+    <div style={{
+      position: 'fixed',
+      inset: 0,
+      background: 'rgba(0, 0, 0, 0.75)',
+      backdropFilter: 'blur(4px)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 50,
+      padding: '20px'
+    }} onClick={onClose}>
+      <div style={{
+        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
+        border: '2px solid rgba(148, 163, 184, 0.3)',
+        borderRadius: '16px',
+        maxWidth: '600px',
+        width: '100%',
+        maxHeight: '80vh',
+        overflow: 'hidden',
+        display: 'flex',
+        flexDirection: 'column'
+      }} onClick={(e) => e.stopPropagation()}>
+        <div style={{
+          padding: '20px 24px',
+          borderBottom: '1px solid rgba(148, 163, 184, 0.2)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {onBack && (
+              <button
+                onClick={onBack}
+                style={{
+                  background: 'rgba(148, 163, 184, 0.15)',
+                  border: '1px solid rgba(148, 163, 184, 0.25)',
+                  borderRadius: '6px',
+                  color: '#94a3b8',
+                  cursor: 'pointer',
+                  padding: '4px 8px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px',
+                  fontSize: '12px',
+                  fontWeight: 600
+                }}
+              >
+                <ArrowLeft size={14} />
+                Back
+              </button>
+            )}
+            <h2 style={{
+              margin: 0,
+              fontSize: '18px',
+              fontWeight: 700,
+              color: '#f1f5f9'
+            }}>
+              {title}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#94a3b8',
+              cursor: 'pointer',
+              padding: '4px'
+            }}
+          >
+            <X size={20} />
+          </button>
+        </div>
+        <div style={{
+          flex: 1,
+          overflow: 'auto',
+          padding: '24px'
+        }}>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const MetricSelectorModal = ({ categories, onSelect, onClose }) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+
+  if (selectedCategory) {
+    return (
+      <Modal
+        title={selectedCategory.name}
+        onClose={() => { setSelectedCategory(null); onClose(); }}
+        onBack={() => setSelectedCategory(null)}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {selectedCategory.metrics.map(metric => (
+            <button
+              key={metric.id}
+              onClick={() => onSelect(metric)}
+              style={{
+                padding: '16px',
+                background: 'rgba(15, 23, 42, 0.8)',
+                border: `2px solid ${metric.color}30`,
+                borderRadius: '10px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = `${metric.color}15`;
+                e.currentTarget.style.borderColor = metric.color;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.8)';
+                e.currentTarget.style.borderColor = `${metric.color}30`;
+              }}
+            >
+              <div style={{
+                display: 'inline-block',
+                padding: '3px 8px',
+                background: `${metric.color}20`,
+                border: `1px solid ${metric.color}50`,
+                borderRadius: '5px',
+                fontSize: '9px',
+                fontWeight: 700,
+                color: metric.color,
+                marginBottom: '6px',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {metric.category}
+              </div>
+              <div style={{
+                fontSize: '15px',
+                fontWeight: 700,
+                color: '#f1f5f9'
+              }}>
+                {metric.name}
+              </div>
+            </button>
+          ))}
+        </div>
+      </Modal>
+    );
+  }
+
+  return (
+    <Modal title="Select Category" onClose={onClose}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {categories.map(cat => {
+          const Icon = cat.icon;
+          return (
+            <button
+              key={cat.id}
+              onClick={() => setSelectedCategory(cat)}
+              style={{
+                padding: '16px',
+                background: 'rgba(15, 23, 42, 0.8)',
+                border: `2px solid ${cat.color}30`,
+                borderRadius: '10px',
+                cursor: 'pointer',
+                textAlign: 'left',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '14px'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = `${cat.color}15`;
+                e.currentTarget.style.borderColor = cat.color;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.8)';
+                e.currentTarget.style.borderColor = `${cat.color}30`;
+              }}
+            >
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '10px',
+                background: `${cat.color}20`,
+                border: `1px solid ${cat.color}40`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <Icon size={20} color={cat.color} />
+              </div>
+              <div>
+                <div style={{ fontSize: '15px', fontWeight: 700, color: '#f1f5f9' }}>
+                  {cat.name}
+                </div>
+                <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>
+                  {cat.metrics.length} metrics
+                </div>
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </Modal>
+  );
+};
+
+// ═══════════════════════════════════════════
 // EXPORT
-// ═══════════════════════════════
+// ═══════════════════════════════════════════
 export default function StrategyStudio() {
   return (
     <ReactFlowProvider>
