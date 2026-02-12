@@ -21,6 +21,9 @@ File Structure:
 │   │   │   ├── category
 │   │   │   │   ├── [category]
 │   │   │   │   │   └── page.tsx
+│   │   │   ├── components
+│   │   │   │   └── client.tsx
+│   │   │   │   └── page.tsx
 │   │   │   └── layout.tsx
 │   │   │   └── page.tsx
 │   │   │   ├── tag
@@ -42,6 +45,7 @@ File Structure:
 │   └── robots.ts
 │   └── sitemap.ts
 ├── components
+│   └── ThemeToggle.tsx
 │   ├── auth
 │   │   └── AuthModal.tsx
 │   │   └── TelegramLoginWidget.tsx
@@ -61,11 +65,13 @@ File Structure:
 │   │   │   └── DrawCounter.tsx
 │   │   │   └── DrawProbabilityCalculator.tsx
 │   │   │   └── WinnersShowcase.tsx
-│   │   ├── strategy
 │   │   ├── tools
 │   │   │   └── FakeWinnerCard.tsx
 │   │   │   └── JackpotBonusCalculator.tsx
 │   │   │   └── MoneyPlanner.tsx
+│   ├── landing
+│   │   └── LandingCategoryCarousel.tsx
+│   │   └── LandingToolCarousel.tsx
 │   ├── layouts
 │   │   └── AppLayout.tsx
 │   ├── navigation
@@ -95,6 +101,7 @@ File Structure:
 │   │   └── client.ts
 │   │   └── nonce-store.ts
 │   ├── mdx
+│   │   └── component-map.ts
 │   │   └── index.ts
 │   │   └── index.ts.backup
 │   └── prisma.ts

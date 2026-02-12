@@ -31,6 +31,15 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
     }
   }, [isMobile, isTablet]);
 
+  // Set dark theme as default
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (!savedTheme) {
+      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
+
   const toggleSidebar = () => {
     setOpenLeftSidebar(!openLeftSidebar);
   };
@@ -44,7 +53,7 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-900 flex flex-col">
+    <div className="min-h-screen flex flex-col">
       <BlogNavbar openLeftSidebar={openLeftSidebar} onToggleSidebar={toggleSidebar} />
 
       <div className="flex relative flex-1">
@@ -89,50 +98,34 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
 
                 {/* Tools */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Free Tools</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Tools</h3>
                   <nav className="flex flex-col gap-2">
-                    <Link href="/i/free-sportpesa-draw-counter" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Draw Counter</Link>
-                    <Link href="/i/odds-winning-sportpesa-jackpot" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Odds Calculator</Link>
-                    <Link href="/i/midweek-mega-jackpot-predictions" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Bonus Calculator</Link>
-                    <Link href="/i/what-to-do-jackpot-money" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Money Planner</Link>
-                    <Link href="/i/fake-sportpesa-jackpot-winner" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Winner Card Generator</Link>
+                    <Link href="/i/jackpot-win-probability" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Win Calculator</Link>
+                    <Link href="/i/what-is-value-betting" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Value Betting</Link>
                   </nav>
                 </div>
 
-                {/* Research */}
+                {/* Winners */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Research</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Winners</h3>
                   <nav className="flex flex-col gap-2">
-                    <Link href="/i/sportpesa-jackpot-winners-picks" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Winner Stories</Link>
-                    <Link href="/i/biggest-jackpot-wins-kenya" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Biggest Wins</Link>
-                    <Link href="/i/jackpot-winners-kenya" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Kenya Winners</Link>
-                    <Link href="/i/sportpesa-jackpot-prediction-websites" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Prediction Sites Review</Link>
+                    <Link href="/i/mega-jackpot-winners-2024" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Mega Winners 2024</Link>
+                    <Link href="/i/midweek-jackpot-winners-2024" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Midweek Winners</Link>
                   </nav>
                 </div>
 
-                {/* Resources */}
+                {/* Site */}
                 <div>
-                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Resources</h3>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Site</h3>
                   <nav className="flex flex-col gap-2">
-                    <Link href="/i/reputable-online-jackpot-games-kenya" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Reputable Sites</Link>
-                    <Link href="/i/jackpot-betting-sites-kenya-reviews" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Site Reviews</Link>
-                    <Link href="/i/best-apps-jackpot-results-kenya" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Best Apps</Link>
-                    <Link href="/i/buy-lottery-tickets-jackpot-kenya" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">How to Buy Tickets</Link>
+                    <Link href="/" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Home</Link>
+                    <Link href="/i" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">All Articles</Link>
                     <Link href="/support" className="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">Support</Link>
                   </nav>
                 </div>
               </div>
-
               <div className="border-t border-gray-200 dark:border-gray-800 pt-6 text-center">
-                <Link href="/i" className="text-sm font-medium text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-                  App Nyumbani
-                </Link>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-                  Data-driven betting research tools. Define your logic, test it with data.
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
-                  © {new Date().getFullYear()} App Nyumbani. All rights reserved.
-                </p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">© 2026 App</p>
               </div>
             </div>
           </footer>
