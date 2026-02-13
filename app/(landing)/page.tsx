@@ -1,15 +1,10 @@
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
 import LandingToolCarousel from "@/components/landing/LandingToolCarousel";
 import LandingCategoryCarousel from "@/components/landing/LandingCategoryCarousel";
 
 export default function LandingPage() {
   return (
     <>
-      {/* Theme Switcher - Floats on scroll */}
-      <div className="fixed top-4 right-4 z-50">
-        <ThemeToggle />
-      </div>
 
       <div className="pb-6 pt-8">
         {/* ── Hero ── */}

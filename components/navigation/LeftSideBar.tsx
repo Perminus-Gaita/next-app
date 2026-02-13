@@ -84,14 +84,14 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
   const router = useRouter();
   const [showChats, setShowChats] = useState(false);
 
-  // If we are on a chat page, show ChatsView by default
-  const isOnChatPage = pathname?.startsWith("/chat");
-
   const handleChatsClick = () => {
-    // Navigate to /chat/new
     router.push("/chat/new");
-    // Show the chats panel
     setShowChats(true);
+  };
+
+  const handleChatsClose = () => {
+    // Always go back to normal sidebar nav
+    setShowChats(false);
   };
 
   const topNavItems: NavItemType[] = [
@@ -108,11 +108,12 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
     { href: "/support", icon: Headset, label: "Support" },
   ];
 
-  if (showChats || isOnChatPage) {
+  // Show ChatsView only when user explicitly clicked Chats
+  if (showChats) {
     return (
       <ChatsView
         openLeftSidebar={openLeftSidebar}
-        onClose={() => setShowChats(false)}
+        onClose={handleChatsClose}
       />
     );
   }

@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { authClient } from '@/lib/auth/client';
-import { NeonAuthUIProvider, UserButton } from '@neondatabase/auth/react';
+import { NeonAuthUIProvider } from '@neondatabase/auth/react';
 import AuthModal from '@/components/auth/AuthModal';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -31,9 +31,6 @@ export default function RootLayout({ children }: RootLayoutProps) {
           redirectTo="/nyumbani"
           emailOTP
         >
-          <header className="flex justify-end items-center p-4 gap-4 h-16">
-            <UserButton size="icon" />
-          </header>
           <main className="min-h-screen">
             {children}
           </main>
