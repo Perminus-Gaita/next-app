@@ -95,7 +95,6 @@ File Structure:
 │   │   │   └── DrawCounter.tsx
 │   │   │   └── DrawProbabilityCalculator.tsx
 │   │   │   └── WinnersShowcase.tsx
-│   │   ├── strategy
 │   │   ├── tools
 │   │   │   └── FakeWinnerCard.tsx
 │   │   │   └── JackpotBonusCalculator.tsx
