@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { Home, BookOpen, Headset, MessagesSquare, LucideIcon } from "lucide-react";
@@ -81,14 +81,25 @@ interface LeftSideBarProps {
 
 export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarProps) {
   const pathname = usePathname();
+  const router = useRouter();
   const [showChats, setShowChats] = useState(false);
+
+  // If we are on a chat page, show ChatsView by default
+  const isOnChatPage = pathname?.startsWith("/chat");
+
+  const handleChatsClick = () => {
+    // Navigate to /chat/new
+    router.push("/chat/new");
+    // Show the chats panel
+    setShowChats(true);
+  };
 
   const topNavItems: NavItemType[] = [
     { href: "/", icon: Home, label: "About" },
     {
       icon: MessagesSquare,
       label: "Chats",
-      onClick: () => setShowChats(true)
+      onClick: handleChatsClick,
     },
     { href: "/i", icon: BookOpen, label: "Blogs" },
   ];
@@ -97,7 +108,7 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
     { href: "/support", icon: Headset, label: "Support" },
   ];
 
-  if (showChats) {
+  if (showChats || isOnChatPage) {
     return (
       <ChatsView
         openLeftSidebar={openLeftSidebar}
@@ -109,7 +120,6 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
   return (
     <aside className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col h-full">
-        {/* Top navigation items */}
         <div className="flex-1 py-4">
           {topNavItems.map((item, index) => (
             <NavItem
@@ -122,7 +132,6 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
           ))}
         </div>
 
-        {/* Bottom navigation items */}
         <div className="py-4 border-t border-gray-200 dark:border-gray-800">
           {bottomNavItems.map((item, index) => (
             <NavItem

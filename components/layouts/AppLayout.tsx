@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 import LeftSideBar from "@/components/navigation/LeftSideBar";
 import BlogNavbar from "@/components/blog/BlogNavbar";
 import BottomNavigation from "@/components/navigation/BottomNavigation";
@@ -23,11 +24,15 @@ interface AppLayoutProps {
 }
 
 export default function AppLayout({ children }: AppLayoutProps) {
+  const pathname = usePathname();
   const [openLeftSidebar, setOpenLeftSidebar] = useState(false);
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   const isMobile = useMediaQuery("(max-width:639px)");
   const isTablet = useMediaQuery("(min-width:640px) and (max-width:1023px)");
+
+  // Check if current page is a chat page (needs full height, no extra padding)
+  const isChatPage = pathname?.startsWith("/chat");
 
   const toggleSidebar = () => setOpenLeftSidebar(!openLeftSidebar);
 
@@ -81,18 +86,21 @@ export default function AppLayout({ children }: AppLayoutProps) {
         </aside>
 
         <main className={`
-          flex-1 pt-12 px-4 pb-20 md:pb-4 min-h-screen
+          flex-1 pt-12 min-h-screen relative
           transition-all duration-300
           ${getSidebarStyles().content}
+          ${isChatPage ? "" : "px-4 pb-20 md:pb-4"}
         `}>
           {children}
         </main>
       </div>
 
-      <BottomNavigation
-        openLeftSidebar={openLeftSidebar}
-        onToggleSidebar={toggleSidebar}
-      />
+      {!isChatPage && (
+        <BottomNavigation
+          openLeftSidebar={openLeftSidebar}
+          onToggleSidebar={toggleSidebar}
+        />
+      )}
     </div>
   );
 }
