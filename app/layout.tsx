@@ -5,6 +5,7 @@ import { authClient } from '@/lib/auth/client';
 import { NeonAuthUIProvider, UserButton } from '@neondatabase/auth/react';
 import AuthModal from '@/components/auth/AuthModal';
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "My App",
@@ -39,6 +40,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <AuthModal />
         </NeonAuthUIProvider>
       <Analytics />
+      <SpeedInsights />
         </body>
     </html>
   );
