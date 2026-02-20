@@ -56,12 +56,65 @@ const DUMMY_JACKPOT: Jackpot = {
 };
 
 const DUMMY_PREDICTIONS: Prediction[] = [
-  { _id: "pred001", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", picks: [{ gameNumber: 1, pick: "1" }, { gameNumber: 2, pick: "X" }, { gameNumber: 3, pick: "1" }], score: 2, createdAt: new Date("2026-01-24T10:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T10:00:00Z").toISOString() },
-  { _id: "pred002", jackpotId: "jp001", userId: "user002", username: "LuckyPunter254", picks: [{ gameNumber: 1, pick: "2" }, { gameNumber: 2, pick: "1" }, { gameNumber: 3, pick: "X" }], score: 1, createdAt: new Date("2026-01-24T12:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T12:00:00Z").toISOString() },
+  // KenyanBetPro — 3 predictions
+  { _id: "pred001", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", picks: [{ gameNumber: 1, pick: "1" },{ gameNumber: 2, pick: "X" },{ gameNumber: 3, pick: "1" },{ gameNumber: 4, pick: "1" },{ gameNumber: 5, pick: "2" },{ gameNumber: 6, pick: "X" },{ gameNumber: 7, pick: "1" },{ gameNumber: 8, pick: "2" },{ gameNumber: 9, pick: "1" },{ gameNumber: 10, pick: "X" },{ gameNumber: 11, pick: "1" },{ gameNumber: 12, pick: "2" },{ gameNumber: 13, pick: "1" }], score: 0, createdAt: new Date("2026-01-24T10:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T10:00:00Z").toISOString() },
+  { _id: "pred001b", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", picks: [{ gameNumber: 1, pick: "2" },{ gameNumber: 2, pick: "1" },{ gameNumber: 3, pick: "X" },{ gameNumber: 4, pick: "2" },{ gameNumber: 5, pick: "1" },{ gameNumber: 6, pick: "1" },{ gameNumber: 7, pick: "X" },{ gameNumber: 8, pick: "1" },{ gameNumber: 9, pick: "2" },{ gameNumber: 10, pick: "1" },{ gameNumber: 11, pick: "X" },{ gameNumber: 12, pick: "1" },{ gameNumber: 13, pick: "2" }], score: 0, createdAt: new Date("2026-01-24T18:30:00Z").toISOString(), updatedAt: new Date("2026-01-24T18:30:00Z").toISOString() },
+  { _id: "pred001c", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", picks: [{ gameNumber: 1, pick: "X" },{ gameNumber: 2, pick: "2" },{ gameNumber: 3, pick: "2" },{ gameNumber: 4, pick: "1" },{ gameNumber: 5, pick: "X" },{ gameNumber: 6, pick: "2" },{ gameNumber: 7, pick: "1" },{ gameNumber: 8, pick: "X" },{ gameNumber: 9, pick: "1" },{ gameNumber: 10, pick: "2" },{ gameNumber: 11, pick: "1" },{ gameNumber: 12, pick: "X" },{ gameNumber: 13, pick: "1" }], score: 0, createdAt: new Date("2026-01-25T07:15:00Z").toISOString(), updatedAt: new Date("2026-01-25T07:15:00Z").toISOString() },
+  // LuckyPunter254 — 2 predictions
+  { _id: "pred002", jackpotId: "jp001", userId: "user002", username: "LuckyPunter254", picks: [{ gameNumber: 1, pick: "2" },{ gameNumber: 2, pick: "1" },{ gameNumber: 3, pick: "X" },{ gameNumber: 4, pick: "1" },{ gameNumber: 5, pick: "1" },{ gameNumber: 6, pick: "2" },{ gameNumber: 7, pick: "X" },{ gameNumber: 8, pick: "1" },{ gameNumber: 9, pick: "X" },{ gameNumber: 10, pick: "2" },{ gameNumber: 11, pick: "1" },{ gameNumber: 12, pick: "1" },{ gameNumber: 13, pick: "X" }], score: 0, createdAt: new Date("2026-01-24T12:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T12:00:00Z").toISOString() },
+  { _id: "pred002b", jackpotId: "jp001", userId: "user002", username: "LuckyPunter254", picks: [{ gameNumber: 1, pick: "1" },{ gameNumber: 2, pick: "X" },{ gameNumber: 3, pick: "2" },{ gameNumber: 4, pick: "X" },{ gameNumber: 5, pick: "2" },{ gameNumber: 6, pick: "1" },{ gameNumber: 7, pick: "1" },{ gameNumber: 8, pick: "2" },{ gameNumber: 9, pick: "1" },{ gameNumber: 10, pick: "1" },{ gameNumber: 11, pick: "X" },{ gameNumber: 12, pick: "2" },{ gameNumber: 13, pick: "1" }], score: 0, createdAt: new Date("2026-01-25T09:45:00Z").toISOString(), updatedAt: new Date("2026-01-25T09:45:00Z").toISOString() },
+  // NairobiTipster — 2 predictions
+  { _id: "pred003", jackpotId: "jp001", userId: "user003", username: "NairobiTipster", picks: [{ gameNumber: 1, pick: "1" },{ gameNumber: 2, pick: "1" },{ gameNumber: 3, pick: "2" },{ gameNumber: 4, pick: "X" },{ gameNumber: 5, pick: "1" },{ gameNumber: 6, pick: "X" },{ gameNumber: 7, pick: "2" },{ gameNumber: 8, pick: "1" },{ gameNumber: 9, pick: "1" },{ gameNumber: 10, pick: "X" },{ gameNumber: 11, pick: "2" },{ gameNumber: 12, pick: "1" },{ gameNumber: 13, pick: "X" }], score: 0, createdAt: new Date("2026-01-23T14:20:00Z").toISOString(), updatedAt: new Date("2026-01-23T14:20:00Z").toISOString() },
+  { _id: "pred003b", jackpotId: "jp001", userId: "user003", username: "NairobiTipster", picks: [{ gameNumber: 1, pick: "X" },{ gameNumber: 2, pick: "2" },{ gameNumber: 3, pick: "1" },{ gameNumber: 4, pick: "1" },{ gameNumber: 5, pick: "X" },{ gameNumber: 6, pick: "1" },{ gameNumber: 7, pick: "1" },{ gameNumber: 8, pick: "X" },{ gameNumber: 9, pick: "2" },{ gameNumber: 10, pick: "1" },{ gameNumber: 11, pick: "1" },{ gameNumber: 12, pick: "X" },{ gameNumber: 13, pick: "2" }], score: 0, createdAt: new Date("2026-01-24T21:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T21:00:00Z").toISOString() },
+  // MombasaKing — 1 prediction
+  { _id: "pred004", jackpotId: "jp001", userId: "user004", username: "MombasaKing", picks: [{ gameNumber: 1, pick: "1" },{ gameNumber: 2, pick: "2" },{ gameNumber: 3, pick: "X" },{ gameNumber: 4, pick: "2" },{ gameNumber: 5, pick: "1" },{ gameNumber: 6, pick: "1" },{ gameNumber: 7, pick: "X" },{ gameNumber: 8, pick: "2" },{ gameNumber: 9, pick: "X" },{ gameNumber: 10, pick: "1" },{ gameNumber: 11, pick: "2" },{ gameNumber: 12, pick: "X" },{ gameNumber: 13, pick: "1" }], score: 0, createdAt: new Date("2026-01-25T06:00:00Z").toISOString(), updatedAt: new Date("2026-01-25T06:00:00Z").toISOString() },
+  // KisiiPredictor — 2 predictions
+  { _id: "pred005", jackpotId: "jp001", userId: "user005", username: "KisiiPredictor", picks: [{ gameNumber: 1, pick: "X" },{ gameNumber: 2, pick: "X" },{ gameNumber: 3, pick: "1" },{ gameNumber: 4, pick: "1" },{ gameNumber: 5, pick: "2" },{ gameNumber: 6, pick: "X" },{ gameNumber: 7, pick: "2" },{ gameNumber: 8, pick: "1" },{ gameNumber: 9, pick: "1" },{ gameNumber: 10, pick: "X" },{ gameNumber: 11, pick: "1" },{ gameNumber: 12, pick: "2" },{ gameNumber: 13, pick: "X" }], score: 0, createdAt: new Date("2026-01-24T16:30:00Z").toISOString(), updatedAt: new Date("2026-01-24T16:30:00Z").toISOString() },
+  { _id: "pred005b", jackpotId: "jp001", userId: "user005", username: "KisiiPredictor", picks: [{ gameNumber: 1, pick: "2" },{ gameNumber: 2, pick: "1" },{ gameNumber: 3, pick: "1" },{ gameNumber: 4, pick: "X" },{ gameNumber: 5, pick: "1" },{ gameNumber: 6, pick: "2" },{ gameNumber: 7, pick: "1" },{ gameNumber: 8, pick: "X" },{ gameNumber: 9, pick: "2" },{ gameNumber: 10, pick: "2" },{ gameNumber: 11, pick: "X" },{ gameNumber: 12, pick: "1" },{ gameNumber: 13, pick: "1" }], score: 0, createdAt: new Date("2026-01-25T11:00:00Z").toISOString(), updatedAt: new Date("2026-01-25T11:00:00Z").toISOString() },
 ];
 
 const DUMMY_COMMENTS: Comment[] = [
-  { _id: "com001", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", text: "Arsenal looking strong at home. Expecting a win!", createdAt: new Date("2026-01-24T10:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T10:00:00Z").toISOString() },
+  {
+    _id: "com001", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro",
+    text: "Arsenal should win this one easily. Their home form has been incredible — 8 wins in a row at the Emirates.",
+    createdAt: new Date("2026-01-24T10:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T10:00:00Z").toISOString(),
+    parentId: null,
+    replies: [
+      { _id: "com001r1", jackpotId: "jp001", userId: "user003", username: "NairobiTipster", text: "I disagree. Chelsea have been strong on the road this season. Their away xG is top 3.", createdAt: new Date("2026-01-24T10:30:00Z").toISOString(), updatedAt: new Date("2026-01-24T10:30:00Z").toISOString(), parentId: "com001", replies: [] },
+      { _id: "com001r2", jackpotId: "jp001", userId: "user004", username: "MombasaKing", text: "Both valid points but Arsenal xG at home is insane. Going 1 here.", createdAt: new Date("2026-01-24T11:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T11:00:00Z").toISOString(), parentId: "com001", replies: [] },
+    ],
+  },
+  {
+    _id: "com002", jackpotId: "jp001", userId: "user004", username: "MombasaKing",
+    text: "Barcelona vs Real Madrid is the hardest pick this week. El Clasico is always unpredictable — form goes out the window.",
+    createdAt: new Date("2026-01-24T12:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T12:00:00Z").toISOString(),
+    parentId: null, replies: [],
+  },
+  {
+    _id: "com003", jackpotId: "jp001", userId: "user005", username: "KisiiPredictor",
+    text: "Going with 3 draws this round. Match 2, 6, and 10 all look tight on paper. Feeling bold 🔥",
+    createdAt: new Date("2026-01-24T14:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T14:00:00Z").toISOString(),
+    parentId: null,
+    replies: [
+      { _id: "com003r1", jackpotId: "jp001", userId: "user001", username: "KenyanBetPro", text: "3 draws is risky but I can see match 6 being a draw. Milan derbies are cagey.", createdAt: new Date("2026-01-24T14:30:00Z").toISOString(), updatedAt: new Date("2026-01-24T14:30:00Z").toISOString(), parentId: "com003", replies: [] },
+    ],
+  },
+  {
+    _id: "com004", jackpotId: "jp001", userId: "user002", username: "LuckyPunter254",
+    text: "Bayern vs Dortmund — Bayern at home is almost a lock. Their Bundesliga record at Allianz Arena is unreal.",
+    createdAt: new Date("2026-01-24T15:30:00Z").toISOString(), updatedAt: new Date("2026-01-24T15:30:00Z").toISOString(),
+    parentId: null,
+    replies: [
+      { _id: "com004r1", jackpotId: "jp001", userId: "user003", username: "NairobiTipster", text: "True but Dortmund always turn up for Der Klassiker. Last 3 meetings all within 1 goal.", createdAt: new Date("2026-01-24T16:00:00Z").toISOString(), updatedAt: new Date("2026-01-24T16:00:00Z").toISOString(), parentId: "com004", replies: [] },
+      { _id: "com004r2", jackpotId: "jp001", userId: "user002", username: "LuckyPunter254", text: "Fair point. Maybe X is safer than it seems. Still going home win though.", createdAt: new Date("2026-01-24T16:15:00Z").toISOString(), updatedAt: new Date("2026-01-24T16:15:00Z").toISOString(), parentId: "com004", replies: [] },
+    ],
+  },
+  {
+    _id: "com005", jackpotId: "jp001", userId: "user003", username: "NairobiTipster",
+    text: "My picks so far: 1-X-1-1-2-X-1-2-1-X-1-2-1. Heavy on home wins but the odds support it.",
+    createdAt: new Date("2026-01-25T08:00:00Z").toISOString(), updatedAt: new Date("2026-01-25T08:00:00Z").toISOString(),
+    parentId: null, replies: [],
+  },
 ];
 
 // ============================================
@@ -123,6 +176,23 @@ export default function JackpotTracker() {
     setComments(comments.filter((c) => c._id !== commentId));
   };
 
+  const handleReplyComment = (parentId: string, text: string) => {
+    const reply: Comment = {
+      _id: `reply_${Date.now()}`,
+      jackpotId: jackpot._id,
+      userId: "currentUser",
+      username: "You",
+      text,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      parentId,
+      replies: [],
+    };
+    setComments(prev => prev.map(c =>
+      c._id === parentId ? { ...c, replies: [...(c.replies || []), reply] } : c
+    ));
+  };
+
   if (loading) return <JackpotSkeleton />;
   if (error || !jackpot) return <JackpotError error={error} onRetry={() => window.location.reload()} />;
 
@@ -140,7 +210,7 @@ export default function JackpotTracker() {
           <PredictionsTab predictions={predictions} jackpot={jackpot} loading={false} />
         )}
         {activeTab === "comments" && (
-          <CommentsTab comments={comments} loading={false} submitting={false} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} currentUserId="currentUser" />
+          <CommentsTab comments={comments} loading={false} submitting={false} onAddComment={handleAddComment} onDeleteComment={handleDeleteComment} onReplyComment={handleReplyComment} currentUserId="currentUser" />
         )}
       </div>
     </div>

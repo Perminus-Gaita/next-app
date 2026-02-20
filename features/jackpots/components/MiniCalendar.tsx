@@ -39,10 +39,8 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ start, end, onClose, status
     return d >= s && d <= e;
   };
 
-  const isStartDay = (day: number | null): boolean =>
-    day === start.getDate() && month === start.getMonth();
-  const isEndDay = (day: number | null): boolean =>
-    day === end.getDate() && month === end.getMonth();
+  const isStartDay = (day: number | null) => day === start.getDate() && month === start.getMonth();
+  const isEndDay = (day: number | null) => day === end.getDate() && month === end.getMonth();
 
   return (
     <div
@@ -52,69 +50,32 @@ const MiniCalendar: React.FC<MiniCalendarProps> = ({ start, end, onClose, status
       <div className="flex items-center justify-between mb-3">
         <span className="text-sm font-semibold text-foreground">{monthName}</span>
         <div className="flex items-center gap-1.5">
-          {status === 'Open' && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-500">
-              OPEN
-            </span>
-          )}
-          {status === 'Closed' && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-              CLOSED
-            </span>
-          )}
-          {status === 'Finished' && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
-              FINISHED
-            </span>
-          )}
-          {isLatest && (
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary">
-              LATEST
-            </span>
-          )}
+          {status === 'Open' && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-green-500/20 text-green-500">OPEN</span>}
+          {status === 'Closed' && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">CLOSED</span>}
+          {status === 'Finished' && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-muted text-muted-foreground">FINISHED</span>}
+          {isLatest && <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-primary/20 text-primary">LATEST</span>}
         </div>
       </div>
-
       <div className="grid grid-cols-7 gap-0.5 text-center">
         {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-          <div key={i} className="text-[10px] text-muted-foreground font-medium py-1">
-            {d}
-          </div>
+          <div key={i} className="text-[10px] text-muted-foreground font-medium py-1">{d}</div>
         ))}
         {days.map((day, i) => {
           const inRange = isInRange(day);
           const isS = isStartDay(day);
           const isE = isEndDay(day);
           return (
-            <div
-              key={i}
-              className={`text-xs py-1.5 transition-all ${
-                !day
-                  ? ''
-                  : inRange
-                    ? `font-bold ${
-                        isS || isE
-                          ? 'bg-green-500 text-white rounded-md'
-                          : 'bg-green-500/20 text-green-600 dark:text-green-400'
-                      }`
-                    : 'text-muted-foreground'
-              }`}
-            >
-              {day || ''}
-            </div>
+            <div key={i} className={`text-xs py-1.5 transition-all ${
+              !day ? '' : inRange
+                ? `font-bold ${isS || isE ? 'bg-green-500 text-white rounded-md' : 'bg-green-500/20 text-green-600 dark:text-green-400'}`
+                : 'text-muted-foreground'
+            }`}>{day || ''}</div>
           );
         })}
       </div>
-
       <div className="mt-3 pt-3 border-t border-border flex items-center justify-between">
-        <div className="text-[10px] text-muted-foreground">
-          <span className="inline-block w-2 h-2 rounded-sm bg-green-500 mr-1 align-middle" />
-          Opens
-        </div>
-        <div className="text-[10px] text-muted-foreground">
-          <span className="inline-block w-2 h-2 rounded-sm bg-green-500 mr-1 align-middle" />
-          First Kickoff
-        </div>
+        <div className="text-[10px] text-muted-foreground"><span className="inline-block w-2 h-2 rounded-sm bg-green-500 mr-1 align-middle" />Opens</div>
+        <div className="text-[10px] text-muted-foreground"><span className="inline-block w-2 h-2 rounded-sm bg-green-500 mr-1 align-middle" />First Kickoff</div>
       </div>
     </div>
   );

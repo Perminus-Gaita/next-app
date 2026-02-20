@@ -13,20 +13,12 @@ interface JackpotDetailsProps {
 const JackpotDetails: React.FC<JackpotDetailsProps> = ({ jackpot }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const { start, end } = getJackpotDateRange(jackpot);
-
   const handleCloseCalendar = useCallback(() => setShowCalendar(false), []);
 
   return (
     <div className="border-b border-border">
-      {/* Single glassmorphism box — edge to edge, starts from the top */}
-      <div
-        className="p-[1px]"
-        style={{
-          background: 'linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05), rgba(34,197,94,0.15))',
-        }}
-      >
+      <div className="p-[1px]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05), rgba(34,197,94,0.15))' }}>
         <div className="bg-card p-5 text-center">
-          {/* Date row inside the box */}
           <div className="relative mb-4">
             <button
               onClick={() => setShowCalendar(!showCalendar)}
@@ -35,32 +27,15 @@ const JackpotDetails: React.FC<JackpotDetailsProps> = ({ jackpot }) => {
               <Calendar className="w-[10px] h-[10px]" />
               {formatShortDate(jackpot.finished)} – {formatShortDate(jackpot.events[0]?.kickoffTime || jackpot.finished)} · #{jackpot.jackpotHumanId}
             </button>
-
-            {showCalendar && (
-              <MiniCalendar
-                start={start}
-                end={end}
-                onClose={handleCloseCalendar}
-                status={jackpot.jackpotStatus}
-                isLatest={jackpot.isLatest}
-              />
-            )}
+            {showCalendar && <MiniCalendar start={start} end={end} onClose={handleCloseCalendar} status={jackpot.jackpotStatus} isLatest={jackpot.isLatest} />}
           </div>
-
-          {/* Jackpot info */}
           <div className="text-sm text-green-500/80 font-medium mb-2">
             {jackpot.site} MEGA Jackpot Pro {jackpot.events.length}
           </div>
-
-          <div
-            className="text-3xl md:text-4xl font-black tracking-tight"
-            style={{
-              backgroundImage: 'linear-gradient(to right, #22c55e, #4ade80, #22c55e)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-            }}
-          >
+          <div className="text-3xl md:text-4xl font-black tracking-tight" style={{
+            backgroundImage: 'linear-gradient(to right, #22c55e, #4ade80, #22c55e)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text',
+          }}>
             {jackpot.currencySign} {formatCurrency(jackpot.totalPrizePool)}
           </div>
         </div>

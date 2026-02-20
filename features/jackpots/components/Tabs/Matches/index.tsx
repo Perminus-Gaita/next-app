@@ -11,25 +11,12 @@ interface MatchesTabProps {
   jackpotStatus?: string;
 }
 
-const MatchesTab: React.FC<MatchesTabProps> = ({
-  events,
-  jackpotId,
-  onSelect,
-  jackpotStatus = 'Open',
-}) => {
+const MatchesTab: React.FC<MatchesTabProps> = ({ events, jackpotId, onSelect, jackpotStatus = 'Open' }) => {
   const isFinished = jackpotStatus === 'Finished' || jackpotStatus === 'Closed';
-
   return (
     <div>
       {events.map((event, index) => (
-        <MatchCard
-          key={event.eventNumber}
-          event={event}
-          jackpotId={jackpotId}
-          onSelect={onSelect}
-          isFinished={isFinished}
-          isLast={index === events.length - 1}
-        />
+        <MatchCard key={event.eventNumber} event={event} jackpotId={jackpotId} onSelect={onSelect} isFinished={isFinished} isLast={index === events.length - 1} />
       ))}
     </div>
   );

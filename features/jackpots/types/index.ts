@@ -47,6 +47,8 @@ export interface Prediction {
 }
 
 export interface Comment {
+  parentId?: string | null;
+  replies?: Comment[];
   _id: string;
   jackpotId: string;
   userId: string;
