@@ -28,7 +28,7 @@ const DUMMY_JACKPOT: Jackpot = {
   currencySign: "KSH",
   jackpotStatus: "Open",
   isLatest: true,
-  finished: new Date("2026-01-25T10:00:00Z").toISOString(),
+  finished: new Date("2026-01-20T10:00:00Z").toISOString(),
   bettingClosesAt: new Date("2026-01-26T10:00:00Z").toISOString(),
   finishedGames: 0,
   events: [
