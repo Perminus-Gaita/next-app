@@ -5,22 +5,86 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  // ❌ DO NOT include url here in Prisma 7
 }
 
-// Your models here
+// ============================================
+// Better Auth core tables
+// ============================================
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  // Telegram plugin fields
+  telegramId       String?
+  telegramUsername  String?
+
+  sessions Session[]
+  accounts Account[]
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  // Telegram plugin fields
+  telegramId       String?
+  telegramUsername  String?
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}
+
+// ============================================
+// Your app tables
+// ============================================
+
 model Team {
   id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
-}
-
-model TelegramNonce {
-  id          String   @id @default(cuid())
-  nonce       String   @unique
-  telegramId  BigInt   // Telegram IDs can be large
-  expiresAt   DateTime
-  createdAt   DateTime @default(now())
-
-  @@map("telegram_nonce")
 }

@@ -29,7 +29,7 @@ export function formatShortDate(dateString: string): string {
 export function getJackpotDateRange(jackpot: Jackpot): { start: Date; end: Date } {
   const start = new Date(jackpot.finished);
   const firstKickoff = jackpot.events.reduce(
-    (min, e) => (e.kickoffTime < min ? e.kickoffTime : min),
+    (min: string, e: { kickoffTime: string }) => (e.kickoffTime < min ? e.kickoffTime : min),
     jackpot.events[0]?.kickoffTime || jackpot.finished
   );
   return { start, end: new Date(firstKickoff) };

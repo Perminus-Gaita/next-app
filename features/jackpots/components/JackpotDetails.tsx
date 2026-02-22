@@ -17,14 +17,14 @@ const JackpotDetails: React.FC<JackpotDetailsProps> = ({ jackpot }) => {
 
   return (
     <div className="border-b border-border">
-      <div className="p-[1px]" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05), rgba(34,197,94,0.15))' }}>
+      <div className="p-px" style={{ background: 'linear-gradient(135deg, rgba(34,197,94,0.3), rgba(34,197,94,0.05), rgba(34,197,94,0.15))' }}>
         <div className="bg-card p-5 text-center">
           <div className="relative mb-4">
             <button
               onClick={() => setShowCalendar(!showCalendar)}
               className="inline-flex items-center gap-1.5 text-[11px] font-mono text-muted-foreground hover:text-green-500 transition-colors tracking-wider cursor-pointer border-b border-dashed border-border pb-0.5"
             >
-              <Calendar className="w-[10px] h-[10px]" />
+              <Calendar className="w-2.5 h-2.5" />
               {formatShortDate(jackpot.finished)} – {formatShortDate(jackpot.events[0]?.kickoffTime || jackpot.finished)} · #{jackpot.jackpotHumanId}
             </button>
             {showCalendar && <MiniCalendar start={start} end={end} onClose={handleCloseCalendar} status={jackpot.jackpotStatus} isLatest={jackpot.isLatest} />}

@@ -102,7 +102,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
             <span className="text-xs text-muted-foreground">•</span>
             <span className="text-xs text-muted-foreground">{relativeTime(comment.createdAt)}</span>
           </div>
-          <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap break-words" style={{ margin: 0 }}>
+          <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap wrap-break-word" style={{ margin: 0 }}>
             {comment.text}
           </p>
 
@@ -111,7 +111,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
               <button onClick={() => handleVote('up')} className="p-0.5 rounded transition-colors text-muted-foreground hover:text-primary cursor-pointer">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
               </button>
-              <span className={`text-xs font-semibold tabular-nums min-w-[1.5rem] text-center ${displayVotes > 0 ? 'text-primary' : displayVotes < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
+              <span className={`text-xs font-semibold tabular-nums min-w-6 text-center ${displayVotes > 0 ? 'text-primary' : displayVotes < 0 ? 'text-destructive' : 'text-muted-foreground'}`}>
                 {displayVotes}
               </span>
               <button onClick={() => handleVote('down')} className="p-0.5 rounded transition-colors text-muted-foreground hover:text-destructive cursor-pointer">
