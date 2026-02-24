@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getAllArticles, getAllCategories, getAllTags } from "@/lib/mdx";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.zeqqat.com";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://www.zeqqat.com";
   const articles = getAllArticles();
   const categories = getAllCategories();
   const tags = getAllTags();
