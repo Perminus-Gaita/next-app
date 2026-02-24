@@ -1,9 +1,9 @@
 import { ReactNode } from "react";
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import AuthModal from '@/components/auth/AuthModal';
-import { Analytics } from '@vercel/analytics/next';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import AuthModal from "@/components/auth/AuthModal";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "zeqqat",
@@ -23,13 +23,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-gray-900">
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <AuthModal />
-          <Analytics />
-          <SpeedInsights />
-        </body>
+        <main className="min-h-screen">{children}</main>
+        <AuthModal />
+        <Analytics />
+        <SpeedInsights />
+      </body>
     </html>
   );
 }

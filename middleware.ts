@@ -1,14 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
-  // Check for Better Auth session cookie
-  const sessionCookie =
-    request.cookies.get("better-auth.session_token") ||
-    request.cookies.get("__Secure-better-auth.session_token");
+  const sessionCookie = request.cookies.get("better-auth.session_token");
 
   if (!sessionCookie) {
     const signInUrl = new URL("/auth/sign-in", request.url);
-    signInUrl.searchParams.set("callbackUrl", request.nextUrl.pathname);
+    signInUrl.searchParams.set("redirect", request.nextUrl.pathname);
     return NextResponse.redirect(signInUrl);
   }
 
@@ -16,7 +13,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    "/account/:path*",
-  ],
+  matcher: ["/account/:path*", "/profile/:path*"],
 };

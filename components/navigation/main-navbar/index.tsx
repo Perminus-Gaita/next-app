@@ -5,7 +5,7 @@ import { Menu, X, Sun, Moon, ScrollText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { useAuthModal } from '@/lib/stores/auth-modal-store';
-import { authClient } from '@/lib/auth/client';
+import { authClient } from '@/lib/auth/client/index';
 import MainNavbarDropdown from './main-navbar-dropdown';
 import { usePicksStore } from "@/lib/stores/picks-store";
 
