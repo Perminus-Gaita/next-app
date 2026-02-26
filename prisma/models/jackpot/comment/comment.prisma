@@ -3,7 +3,7 @@ model Comment {
     jackpotId String                    @map("jackpot_id")
     userId    String                    @map("user_id")
     parentId  String?                   @map("parent_id")
-    body      String   @db.Text
+    body      String   @db.VarChar(10000)
     score     Int      @default(0)
     depth     Int      @default(0)
     deleted   Boolean  @default(false)
