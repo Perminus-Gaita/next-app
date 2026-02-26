@@ -1,0 +1,11 @@
+model Prize {
+  id          String  @id @default(cuid(2))
+  jackpotId   String                        @map("jackpot_id")
+  gamesPlayed Int     @db.SmallInt          @map("games_played")
+  amount      Decimal @db.Decimal(15, 2)
+
+  jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+
+  @@unique([jackpotId, gamesPlayed])
+  @@map("prizes")
+}

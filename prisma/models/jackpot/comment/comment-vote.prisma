@@ -1,0 +1,12 @@
+model CommentVote {
+  id        String   @id @default(cuid(2))
+  commentId String                      @map("comment_id")
+  userId    String                      @map("user_id")
+  value     Int                         // 1 = upvote, -1 = downvote
+
+  comment Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@map("comment_votes")
+}

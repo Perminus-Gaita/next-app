@@ -1,0 +1,22 @@
+model Comment {
+    id        String   @id @default(cuid(2))
+    jackpotId String                    @map("jackpot_id")
+    userId    String                    @map("user_id")
+    parentId  String?                   @map("parent_id")
+    body      String   @db.Text
+    score     Int      @default(0)
+    depth     Int      @default(0)
+    deleted   Boolean  @default(false)
+    updatedAt DateTime @updatedAt       @map("updated_at")
+    createdAt DateTime @default(now())  @map("created_at")
+
+    jackpot  Jackpot       @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+    user     User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+    parent   Comment?      @relation("CommentThread", fields: [parentId], references: [id], onDelete: Cascade)
+    children Comment[]     @relation("CommentThread")
+    votes    CommentVote[]
+
+    @@index([jackpotId, createdAt])
+    @@index([parentId])
+    @@map("comments")
+}

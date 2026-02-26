@@ -1,0 +1,34 @@
+model Jackpot {
+  id            String         @id @default(cuid(2))
+  humanId       Int            @unique             @map("human_id")
+  type          JackpotType
+  status        JackpotStatus  @default(OPEN)
+  bettingStatus BettingStatus?                     @map("betting_status")
+  openedAt      DateTime?                          @map("opened_at")
+  finishedAt    DateTime?                          @map("finished_at")
+  updatedAt     DateTime       @updatedAt          @map("updated_at")
+  createdAt     DateTime       @default(now())     @map("created_at")
+
+  events           Event[]
+  prizes           Prize[]
+  payoutBreakdowns PayoutBreakdown[]
+  pickSets         PickSet[]
+
+  @@map("jackpots")
+}
+
+enum JackpotType {
+  MEGA
+  WEEKLY
+}
+
+enum JackpotStatus {
+  OPEN
+  FINISHED
+  CANCELED
+}
+
+enum BettingStatus {
+  OPEN
+  CLOSED
+}

@@ -1,0 +1,15 @@
+// pick-set.prisma
+
+model PickSet {
+  id        String   @id @default(cuid(2))
+  userId    String                      @map("user_id")
+  jackpotId String                      @map("jackpot_id")
+  name      String?  @db.VarChar(100)
+  createdAt DateTime @default(now())    @map("created_at")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+  picks   Pick[]
+
+  @@map("pick_sets")
+}

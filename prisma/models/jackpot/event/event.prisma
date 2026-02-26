@@ -1,0 +1,24 @@
+model Event {
+  id          String   @id @default(cuid(2))
+  jackpotId   String                        @map("jackpot_id")
+  eventOrder  Int      @db.SmallInt         @map("event_order")
+  kickoffTime DateTime                      @map("kickoff_time")
+  homeTeam    String   @db.VarChar(100)     @map("home_team")
+  awayTeam    String   @db.VarChar(100)     @map("away_team")
+  tournament  String?  @db.VarChar(100)
+  country     String?  @db.VarChar(50)
+  countryCode String?  @db.VarChar(5)       @map("country_code")
+  homeOdds    Decimal? @db.Decimal(5, 2)    @map("home_odds")
+  drawOdds    Decimal? @db.Decimal(5, 2)    @map("draw_odds")
+  awayOdds    Decimal? @db.Decimal(5, 2)    @map("away_odds")
+  /// Official SportPesa result — may differ from score if extra time applies
+  resultPick  String?  @db.VarChar(10)      @map("result_pick")
+  homeScore   Int?     @db.SmallInt         @map("home_score")
+  awayScore   Int?     @db.SmallInt         @map("away_score")
+
+  jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+  picks   Pick[]
+
+  @@unique([jackpotId, eventOrder])
+  @@map("events")
+}

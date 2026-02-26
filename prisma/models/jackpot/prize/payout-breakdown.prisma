@@ -1,0 +1,14 @@
+model PayoutBreakdown {
+  id           String    @id @default(cuid(2))
+  jackpotId    String                          @map("jackpot_id")
+  gamesPlayed  Int       @db.SmallInt          @map("games_played")     /// 17, 16, 15, 14, or 13
+  missedCount  Int       @db.SmallInt          @map("missed_count")     /// 0 = all correct (jackpot), 1 = missed one, ... 5 = missed five
+  prizePool    Decimal   @db.Decimal(15, 2)    @map("prize_pool")       /// Total allocated to this tier+level
+  winnerCount  Int                             @map("winner_count")     /// How many people qualified
+  prizePerWinner Decimal @db.Decimal(15, 2)    @map("prize_per_winner") /// What each winner actually received
+
+  jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+
+  @@unique([jackpotId, gamesPlayed, missedCount])
+  @@map("payout_breakdowns")
+}

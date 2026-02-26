@@ -1,0 +1,29 @@
+model Pick {
+  id        String     @id @default(cuid(2))
+  userId    String     @map("user_id")
+  jackpotId String     @map("jackpot_id")
+  eventId   String     @map("event_id")
+  pickSetId String     @map("pick_set_id")
+  pick      PickChoice
+  isCorrect Boolean?   @map("is_correct")
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
+  event   Event   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  pickSet PickSet @relation(fields: [pickSetId], references: [id], onDelete: Cascade)
+
+  @@unique([pickSetId, eventId])
+  @@index([userId])
+  @@index([jackpotId])
+  @@index([eventId, pick])
+  @@map("picks")
+}
+
+enum PickChoice {
+  HOME
+  DRAW
+  AWAY
+}
+
+
+
