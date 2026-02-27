@@ -13,6 +13,8 @@ model Jackpot {
   prizes           Prize[]
   payoutBreakdowns PayoutBreakdown[]
   pickSets         PickSet[]
+  picks            Pick[]
+  comments         Comment[]
 
   @@map("jackpots")
 }

@@ -8,9 +8,12 @@ model User {
     updatedAt     DateTime  @updatedAt      @map("updated_at")
     createdAt     DateTime  @default(now()) @map("created_at")
 
-    sessions Session[]
-    accounts Account[]
+    sessions     Session[]
+    accounts     Account[]
+    comments     Comment[]
+    commentVotes CommentVote[]
+    pickSets     PickSet[]
+    picks        Pick[]
 
     @@map("users")
 }
-
