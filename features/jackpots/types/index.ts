@@ -8,7 +8,7 @@ export interface JackpotEvent {
     draw: number;
     away: number;
   };
-  result?: '1' | 'X' | '2';
+  result?: "1" | "X" | "2";
   score?: {
     home: number;
     away: number;
@@ -29,7 +29,7 @@ export interface Jackpot {
   site: string;
   totalPrizePool: number;
   currencySign: string;
-  jackpotStatus: 'Open' | 'Closed' | 'Finished';
+  jackpotStatus: "Open" | "Closed" | "Finished";
   isLatest: boolean;
   finished: string;
   bettingClosesAt: string;
@@ -41,7 +41,7 @@ export interface Jackpot {
 // Prediction Types
 export interface PredictionPick {
   gameNumber: number;
-  pick: '1' | 'X' | '2';
+  pick: "1" | "X" | "2";
 }
 
 export interface Prediction {
@@ -81,7 +81,7 @@ export interface Statistics {
 }
 
 // Local Pick Type (for UI state)
-export type LocalPick = 'Home' | 'Draw' | 'Away';
+export type LocalPick = "Home" | "Draw" | "Away";
 
 export interface LocalPicks {
   [eventNumber: number]: LocalPick;
@@ -115,7 +115,10 @@ export interface UsePredictionsReturn {
   error: string | null;
   submitting: boolean;
   createPrediction: (picks: PredictionPick[]) => Promise<Prediction | null>;
-  updatePrediction: (predictionId: string, picks: PredictionPick[]) => Promise<Prediction | null>;
+  updatePrediction: (
+    predictionId: string,
+    picks: PredictionPick[]
+  ) => Promise<Prediction | null>;
   deletePrediction: (predictionId: string) => Promise<boolean>;
 }
 
@@ -137,18 +140,18 @@ export interface UseStatisticsReturn {
 }
 
 // Tab Types
-export type TabType = 'matches' | 'predictions' | 'stats' | 'comments';
+export type TabType = "matches" | "predictions" | "stats" | "comments";
 
 // SEO Types
 export interface JackpotJsonLd {
-  '@context': string;
-  '@type': string;
+  "@context": string;
+  "@type": string;
   name: string;
   description: string;
   startDate: string;
   endDate: string;
   offers?: {
-    '@type': string;
+    "@type": string;
     price: string;
     priceCurrency: string;
   };

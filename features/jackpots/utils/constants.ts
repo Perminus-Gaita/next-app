@@ -2,7 +2,7 @@ import type { TabType } from '../types';
 
 export const TABS: { id: TabType; label: string }[] = [
   { id: 'matches', label: 'Matches' },
-  { id: 'predictions', label: 'Predictions' },
+  { id: 'predictions', label: 'Picks' },
   { id: 'stats', label: 'Stats' },
   { id: 'comments', label: 'Comments' },
 ];

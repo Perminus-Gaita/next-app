@@ -71,7 +71,7 @@ const PredictionsTab: React.FC<PredictionsTabProps> = ({ predictions, jackpot, l
   };
 
   if (loading) return <div className="flex items-center justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
-  if (predictions.length === 0) return <div className="flex flex-col items-center justify-center py-12 px-4 text-center"><div className="text-muted-foreground mb-2">No predictions yet</div><div className="text-sm text-muted-foreground">Be the first to make a prediction!</div></div>;
+  if (predictions.length === 0) return <div className="flex flex-col items-center justify-center py-12 px-4 text-center"><div className="text-muted-foreground mb-2">No picks yet</div><div className="text-sm text-muted-foreground">Be the first to make picks!</div></div>;
 
   // =========================================================================
   // UI 1: BEFORE JACKPOT STARTS — blurred picks use jackpot.events.length
