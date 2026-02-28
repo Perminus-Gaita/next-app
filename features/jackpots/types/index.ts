@@ -43,6 +43,7 @@ export interface Jackpot {
 export interface PredictionPick {
   gameNumber: number;
   pick: "1" | "X" | "2";
+  isCorrect?: boolean | null;
 }
 
 export interface Prediction {
@@ -50,10 +51,12 @@ export interface Prediction {
   jackpotId: string;
   userId: string;
   username?: string;
+  image?: string | null;
+  name?: string | null;
   picks: PredictionPick[];
   score?: number;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
 }
 
 // Comment Types
@@ -62,9 +65,13 @@ export interface Comment {
   jackpotId: string;
   userId: string;
   username?: string;
+  image?: string | null;
   text: string;
   votes?: number;
+  userVote?: number;
   parentId?: string | null;
+  depth?: number;
+  deleted?: boolean;
   replies?: Comment[];
   createdAt: string;
   updatedAt: string;

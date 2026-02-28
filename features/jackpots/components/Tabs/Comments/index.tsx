@@ -39,8 +39,6 @@ function useCanvasLines(
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, rect.width, rect.height);
 
-    const style = getComputedStyle(document.documentElement);
-    // #change line color here
     const lineColor = '#6b7280';
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = 2;
@@ -139,10 +137,10 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
             onChange={(e) => setNewComment(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
             placeholder="Add a comment..."
-            className="flex-1 bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 bg-muted/50 border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
             maxLength={500} disabled={submitting} />
           <button onClick={handleSubmit} disabled={!newComment.trim() || submitting}
-            className="bg-red text-primary-foreground p-2 rounded-lg hover:bg-red/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            className="bg-primary text-primary-foreground p-2 rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
             {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
           </button>
         </div>
@@ -154,10 +152,10 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
           <div className="text-sm text-muted-foreground">Be the first to comment!</div>
         </div>
       ) : (
-        <div ref={containerRef} className="px-4 pb-4 relative">
+        <div ref={containerRef} className="pb-4 relative">
           <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, pointerEvents: 'none', zIndex: 1 }} />
           {topLevelComments.map((comment, idx) => (
-            <div key={comment._id} className={idx < topLevelComments.length - 1 ? 'border-b border-red-500' : ''}>
+            <div key={comment._id} className={`px-4 ${idx < topLevelComments.length - 1 ? 'border-b border-border' : ''}`}>
               <CommentItem comment={comment} depth={0}
                 collapsedSet={collapsedSet} toggleCollapse={toggleCollapse}
                 onDelete={onDeleteComment} onReply={onReplyComment}

@@ -82,7 +82,7 @@ export default function MainNavbarDropdown({
                   {user?.name || 'User'}
                 </div>
                 <div className={`${mode === 'dark' ? 'text-gray-500' : 'text-gray-600'} text-xs`}>
-                  {user?.email || ''}
+                  {user?.username ? `@${user.username}` : ''}
                 </div>
               </div>
             </div>
