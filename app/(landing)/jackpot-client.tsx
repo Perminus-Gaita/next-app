@@ -8,8 +8,9 @@ import MatchesTab from "@/features/jackpots/components/Tabs/Matches";
 import PredictionsTab from "@/features/jackpots/components/Tabs/Predictions";
 import CommentsTab from "@/features/jackpots/components/Tabs/Comments";
 import type { Jackpot, Comment, TabType } from "@/features/jackpots/types";
+import type { CalendarJackpot } from "@/features/jackpots/components/JackpotCalendar";
 
-// ─── Skeleton (initial load only) ───
+// ─── Full page skeleton (initial load) ───
 const JackpotSkeleton = () => (
   <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
     <div className="p-6 space-y-4 animate-pulse">
@@ -25,10 +26,30 @@ const JackpotSkeleton = () => (
   </div>
 );
 
-// ─── Tab loading spinner ───
-const TabSpinner = () => (
-  <div className="flex items-center justify-center py-16">
-    <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+// ─── Matches skeleton (when switching jackpot) ───
+const MatchesSkeleton = () => (
+  <div className="animate-pulse">
+    {[...Array(6)].map((_, i) => (
+      <div key={i} className={`px-4 py-4 ${i < 5 ? "border-b border-border" : ""}`}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="h-5 w-6 bg-muted rounded" />
+            <div className="h-4 w-24 bg-muted rounded" />
+          </div>
+          <div className="h-5 w-20 bg-muted rounded" />
+        </div>
+        <div className="flex items-center justify-between gap-2 mb-3">
+          <div className="h-4 w-28 bg-muted rounded ml-auto" />
+          <div className="h-3 w-6 bg-muted rounded" />
+          <div className="h-4 w-28 bg-muted rounded mr-auto" />
+        </div>
+        <div className="grid grid-cols-3 gap-2">
+          <div className="h-10 bg-muted rounded-lg" />
+          <div className="h-10 bg-muted rounded-lg" />
+          <div className="h-10 bg-muted rounded-lg" />
+        </div>
+      </div>
+    ))}
   </div>
 );
 
@@ -51,16 +72,35 @@ export default function JackpotTracker() {
   const [activeTab, setActiveTab] = useState<TabType>("matches");
   const [jackpot, setJackpot] = useState<Jackpot | null>(null);
   const [initialLoading, setInitialLoading] = useState(true);
-  const [tabLoading, setTabLoading] = useState(false);
+  const [switchingJackpot, setSwitchingJackpot] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
+
+  // Pre-fetched calendar data — loaded once on mount
+  const [calendarData, setCalendarData] = useState<CalendarJackpot[]>([]);
+
+  // Pre-fetch all calendar jackpots on mount (only ~170 records)
+  useEffect(() => {
+    async function prefetchCalendar() {
+      try {
+        const res = await fetch("/api/jackpots/calendar?all=true");
+        if (res.ok) {
+          const data: CalendarJackpot[] = await res.json();
+          setCalendarData(data);
+        }
+      } catch (err) {
+        console.error("Failed to prefetch calendar data:", err);
+      }
+    }
+    prefetchCalendar();
+  }, []);
 
   const fetchJackpot = useCallback(async (id?: string) => {
     try {
       setError(null);
-      // Only show full skeleton on first load
+      // First load = full skeleton, subsequent = switching skeleton
       if (!jackpot) setInitialLoading(true);
-      else setTabLoading(true);
+      else setSwitchingJackpot(true);
 
       const url = id ? `/api/jackpots/${id}` : "/api/jackpots/latest";
       const res = await fetch(url);
@@ -71,7 +111,7 @@ export default function JackpotTracker() {
       setError(err instanceof Error ? err.message : "Failed to load jackpot");
     } finally {
       setInitialLoading(false);
-      setTabLoading(false);
+      setSwitchingJackpot(false);
     }
   }, [jackpot]);
 
@@ -111,11 +151,15 @@ export default function JackpotTracker() {
 
   return (
     <div className="max-w-2xl mx-auto border-x border-border min-h-screen">
-      <JackpotDetails jackpot={jackpot} onSelectJackpot={handleSelectJackpot} />
+      <JackpotDetails
+        jackpot={jackpot}
+        onSelectJackpot={handleSelectJackpot}
+        calendarData={calendarData}
+      />
       <TabsHeader activeTab={activeTab} setActiveTab={setActiveTab} />
       <div className="animate-in fade-in duration-200">
-        {tabLoading ? (
-          <TabSpinner />
+        {switchingJackpot ? (
+          <MatchesSkeleton />
         ) : (
           <>
             {activeTab === "matches" && (

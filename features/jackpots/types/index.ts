@@ -32,6 +32,7 @@ export interface Jackpot {
   jackpotStatus: "Open" | "Closed" | "Finished";
   isLatest: boolean;
   finished: string;
+  openedAt?: string;
   bettingClosesAt: string;
   events: JackpotEvent[];
   prizes: JackpotPrize[];

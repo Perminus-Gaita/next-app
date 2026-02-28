@@ -14,6 +14,9 @@ const PicksDrawer = () => {
   // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState<"single" | "all" | null>(null);
+
+  // Pick name for saving
+  const [pickName, setPickName] = useState("");
   const [pickToRemove, setPickToRemove] = useState<string | null>(null);
 
   // Track previous picks count for auto-scroll
@@ -118,8 +121,13 @@ const PicksDrawer = () => {
   };
 
   const handleSavePicks = () => {
-    console.log("Saving picks:", picks);
-    alert("Picks saved! (This is dummy data)");
+    if (!pickName.trim()) {
+      alert("Please enter a name for your picks");
+      return;
+    }
+    console.log("Saving picks:", { name: pickName, picks });
+    alert(`Picks "${pickName}" saved! (This is dummy data)`);
+    setPickName("");
   };
 
   if (!portalElement) return null;
@@ -355,8 +363,20 @@ const PicksDrawer = () => {
         {/* Sticky Save Picks button at bottom - only after strategy finishes */}
         {!isStrategyRunning && picks.length > 0 && (
           <div className="shrink-0 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            <div className="mb-3">
+              <label className="block text-xs font-medium text-muted-foreground mb-1.5">Pick Name</label>
+              <input
+                type="text"
+                value={pickName}
+                onChange={(e) => setPickName(e.target.value)}
+                placeholder="e.g. Safe Home Favorites"
+                maxLength={100}
+                className="w-full px-3 py-2 text-sm border border-gray-200 dark:border-gray-700 rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+              />
+            </div>
             <button
               onClick={handleSavePicks}
+              disabled={!pickName.trim()}
               className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all"
             >
               <Save className="w-4 h-4" />

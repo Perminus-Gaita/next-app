@@ -126,6 +126,7 @@ export function mapJackpotToResponse(jp: DbJackpot) {
     jackpotStatus: mapStatus(jp.status),
     isLatest,
     finished: jp.finishedAt?.toISOString() ?? lastKickoff ?? "",
+    openedAt: jp.openedAt?.toISOString() ?? null,
     bettingClosesAt: firstKickoff ?? "",
     events,
     prizes,

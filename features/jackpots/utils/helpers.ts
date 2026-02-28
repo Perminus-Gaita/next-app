@@ -27,12 +27,37 @@ export function formatShortDate(dateString: string): string {
 }
 
 export function getJackpotDateRange(jackpot: Jackpot): { start: Date; end: Date } {
-  const start = new Date(jackpot.finished);
-  const firstKickoff = jackpot.events.reduce(
-    (min: string, e: { kickoffTime: string }) => (e.kickoffTime < min ? e.kickoffTime : min),
-    jackpot.events[0]?.kickoffTime || jackpot.finished
-  );
-  return { start, end: new Date(firstKickoff) };
+  // Start = openedAt if available, else finished minus 6 days
+  let start: Date;
+  if (jackpot.openedAt) {
+    start = new Date(jackpot.openedAt);
+  } else {
+    start = new Date(jackpot.finished);
+    start.setDate(start.getDate() - 6);
+  }
+
+  // End = finishedAt for finished jackpots, else last kickoff + 90min
+  let end: Date;
+  if (jackpot.jackpotStatus === 'Finished' && jackpot.finished) {
+    end = new Date(jackpot.finished);
+  } else {
+    const lastKickoff = jackpot.events.reduce(
+      (max: string, e: { kickoffTime: string }) =>
+        e.kickoffTime > max ? e.kickoffTime : max,
+      jackpot.events[0]?.kickoffTime || jackpot.finished
+    );
+    end = new Date(lastKickoff);
+    end.setMinutes(end.getMinutes() + 90);
+  }
+
+  return { start, end };
+}
+
+export function formatDateRange(jackpot: Jackpot): string {
+  const { start, end } = getJackpotDateRange(jackpot);
+  const fmt = (d: Date) =>
+    d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }).toUpperCase();
+  return fmt(start) + ' – ' + fmt(end);
 }
 
 export function formatPredictionDate(dateString: string): string {

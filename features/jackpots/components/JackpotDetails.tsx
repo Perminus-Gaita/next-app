@@ -4,15 +4,17 @@ import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Calendar } from "lucide-react";
 import {
   formatShortDate,
-  getJackpotDateRange,
+  formatDateRange,
   formatCurrency,
 } from "../utils/helpers";
 import JackpotCalendar from "./JackpotCalendar";
+import type { CalendarJackpot } from "./JackpotCalendar";
 import type { Jackpot } from "../types";
 
 interface JackpotDetailsProps {
   jackpot: Jackpot;
   onSelectJackpot?: (jackpotId: string) => void;
+  calendarData?: CalendarJackpot[];
 }
 
 // ─── Prize Carousel ───
@@ -90,17 +92,21 @@ function PrizeCarousel({ prizes, currencySign, site }: {
 const JackpotDetails: React.FC<JackpotDetailsProps> = ({
   jackpot,
   onSelectJackpot,
+  calendarData,
 }) => {
   const [showCalendar, setShowCalendar] = useState(false);
   const handleCloseCalendar = useCallback(() => setShowCalendar(false), []);
 
+  // Do NOT close calendar when selecting a jackpot — just load in background
   const handleSelectJackpot = useCallback(
     (jackpotId: string) => {
-      setShowCalendar(false);
       onSelectJackpot?.(jackpotId);
     },
     [onSelectJackpot]
   );
+
+  // Date range: past → future (openedAt – finishedAt/lastKickoff+90m)
+  const dateRangeStr = formatDateRange(jackpot);
 
   return (
     <div className="border-b border-border">
@@ -118,17 +124,14 @@ const JackpotDetails: React.FC<JackpotDetailsProps> = ({
               className="inline-flex items-center gap-1.5 text-[11px] font-mono text-muted-foreground hover:text-green-500 transition-colors tracking-wider cursor-pointer border-b border-dashed border-border pb-0.5"
             >
               <Calendar className="w-2.5 h-2.5" />
-              {formatShortDate(jackpot.finished)} –{" "}
-              {formatShortDate(
-                jackpot.events[0]?.kickoffTime || jackpot.finished
-              )}{" "}
-              · #{jackpot.jackpotHumanId}
+              {dateRangeStr} &middot; #{jackpot.jackpotHumanId}
             </button>
             {showCalendar && (
               <JackpotCalendar
                 currentJackpotId={jackpot._id}
                 onSelectJackpot={handleSelectJackpot}
                 onClose={handleCloseCalendar}
+                preloadedData={calendarData}
               />
             )}
           </div>

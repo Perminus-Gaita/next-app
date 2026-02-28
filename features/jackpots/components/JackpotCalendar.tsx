@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback, useRef } from "react";
 
 // ─── Types ───
-interface CalendarJackpot {
+export interface CalendarJackpot {
   id: string;
   humanId: number;
   status: string;
@@ -18,6 +18,7 @@ interface JackpotCalendarProps {
   currentJackpotId?: string;
   onSelectJackpot: (jackpotId: string) => void;
   onClose: () => void;
+  preloadedData?: CalendarJackpot[];
 }
 
 const DAYS_HDR = ["S", "M", "T", "W", "T", "F", "S"];
@@ -120,19 +121,19 @@ function getCellClasses(opts: {
   return `${base} ${radius} ${state} ${todayCls}`;
 }
 
-export default function JackpotCalendar({ currentJackpotId, onSelectJackpot, onClose }: JackpotCalendarProps) {
+export default function JackpotCalendar({ currentJackpotId, onSelectJackpot, onClose, preloadedData }: JackpotCalendarProps) {
   const ref = useRef<HTMLDivElement>(null);
   const today = useMemo(() => new Date(), []);
   const todayKey = toKey(today);
 
   const [year, setYear] = useState(today.getFullYear());
   const [month, setMonth] = useState(today.getMonth());
-  const [jackpots, setJackpots] = useState<CalendarJackpot[]>([]);
   const [allJackpots, setAllJackpots] = useState<CalendarJackpot[]>([]);
   const [selectedJackpot, setSelectedJackpot] = useState<CalendarJackpot | null>(null);
   const [hoveredJpId, setHoveredJpId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!preloadedData);
 
+  // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) onClose();
@@ -141,7 +142,24 @@ export default function JackpotCalendar({ currentJackpotId, onSelectJackpot, onC
     return () => document.removeEventListener("mousedown", handler);
   }, [onClose]);
 
+  // Initialize from preloaded data or fetch as fallback
   useEffect(() => {
+    if (preloadedData && preloadedData.length > 0) {
+      const sorted = [...preloadedData].sort((a, b) => a.humanId - b.humanId);
+      setAllJackpots(sorted);
+
+      const current = sorted.find((j) => j.id === currentJackpotId);
+      const active = sorted.find((j) => j.status === "OPEN");
+      const initial = current || active || sorted[sorted.length - 1];
+      if (initial) {
+        setSelectedJackpot(initial);
+        const d = parseDate(initial.openedAt);
+        if (d) { setMonth(d.getMonth()); setYear(d.getFullYear()); }
+      }
+      setLoading(false);
+      return;
+    }
+
     async function fetchAll() {
       try {
         const res = await fetch("/api/jackpots/calendar?all=true");
@@ -161,29 +179,29 @@ export default function JackpotCalendar({ currentJackpotId, onSelectJackpot, onC
         }
       } catch (err) {
         console.error("Failed to fetch all jackpots:", err);
-      }
-    }
-    fetchAll();
-  }, [currentJackpotId]);
-
-  useEffect(() => {
-    async function fetchMonth() {
-      setLoading(true);
-      try {
-        const monthStr = `${year}-${String(month + 1).padStart(2, "0")}`;
-        const res = await fetch(`/api/jackpots/calendar?month=${monthStr}`);
-        if (res.ok) {
-          const data: CalendarJackpot[] = await res.json();
-          setJackpots(data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch calendar data:", err);
       } finally {
         setLoading(false);
       }
     }
-    fetchMonth();
-  }, [year, month]);
+    fetchAll();
+  }, [currentJackpotId, preloadedData]);
+
+  // Client-side month filtering (replaces per-month API call)
+  const jackpots = useMemo(() => {
+    if (allJackpots.length === 0) return [];
+    const mStart = new Date(year, month, 1);
+    const mEnd = new Date(year, month + 1, 0, 23, 59, 59, 999);
+    return allJackpots.filter((jp) => {
+      if (!jp.openedAt) return false;
+      const rangeStart = new Date(jp.openedAt);
+      const rangeEnd = jp.endDate
+        ? new Date(jp.endDate)
+        : jp.finishedAt
+          ? new Date(jp.finishedAt)
+          : rangeStart;
+      return rangeStart <= mEnd && rangeEnd >= mStart;
+    });
+  }, [allJackpots, year, month]);
 
   const firstDow = new Date(year, month, 1).getDay();
   const dim = new Date(year, month + 1, 0).getDate();
@@ -299,11 +317,9 @@ export default function JackpotCalendar({ currentJackpotId, onSelectJackpot, onC
             <div className="flex items-center gap-2">
               <span className="text-base font-extrabold text-foreground font-mono">#{selectedJackpot.humanId}</span>
               {selectedJackpot.status === "OPEN" ? (
-                <span className="text-[9px] font-bold py-0.5 px-2 rounded-full bg-green-500/15 text-green-500 inline-flex items-center gap-1">
-                  <span className="w-1.25 h-1.25 rounded-full bg-green-500" />ACTIVE
-                </span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-green-500/15 text-green-500 border border-green-500/25">OPEN</span>
               ) : (
-                <span className="text-[9px] font-bold py-0.5 px-2 rounded-full bg-muted text-muted-foreground">FINISHED</span>
+                <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-muted text-muted-foreground border border-border">DONE</span>
               )}
             </div>
             <button onClick={() => navJp(1)} disabled={cidx >= sorted.length - 1} className={`w-7 h-7 rounded-lg flex items-center justify-center text-sm transition-colors ${cidx < sorted.length - 1 ? "bg-muted/50 border border-border text-muted-foreground hover:text-foreground" : "text-transparent cursor-default"}`}>›</button>

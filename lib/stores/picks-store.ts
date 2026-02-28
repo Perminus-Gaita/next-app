@@ -40,7 +40,6 @@ export const usePicksStore = create<PicksState>((set) => ({
       );
       return {
         picks: [...filtered, pick],
-        isDrawerOpen: true,
       };
     }),
 
