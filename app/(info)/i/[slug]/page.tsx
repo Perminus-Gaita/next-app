@@ -107,7 +107,7 @@ export default async function ArticlePage({ params }: PageProps) {
 
         {/* Metadata — quiet, at the bottom */}
         <footer className="mt-12 pt-6 border-t border-gray-100 dark:border-gray-800">
-          <div className="flex items-center justify-between text-xs text-gray-400 dark:text-gray-500">
+          <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-500">
             <div className="flex items-center gap-2">
               <time dateTime={article.date}>
                 {new Date(article.date).toLocaleDateString("en-US", {
@@ -133,7 +133,7 @@ export default async function ArticlePage({ params }: PageProps) {
                 <Link
                   key={tag}
                   href={`/i/tag/${tag.toLowerCase()}`}
-                  className="text-xs px-2 py-0.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                  className="text-xs px-2 py-0.5 text-gray-500 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
                   #{tag}
                 </Link>

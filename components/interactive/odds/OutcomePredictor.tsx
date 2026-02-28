@@ -47,7 +47,7 @@ export default function OutcomePredictor({ outcomeType = "home" }: { outcomeType
             <input type="range" min="0" max="100" step="5" value={factor.weight}
               onChange={(e) => updateWeight(i, parseInt(e.target.value))}
               className="w-full accent-slate-700 dark:accent-blue-400" style={{ background: "rgba(0,0,0,0.08)" }} />
-            <p className="text-xs text-gray-500 dark:text-gray-400">{factor.description}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{factor.description}</p>
           </div>
         ))}
       </div>

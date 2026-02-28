@@ -159,12 +159,12 @@ export default function LandingToolCarousel() {
           <h3 className="text-base font-bold text-gray-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
             {currentTool.title}
           </h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+          <p className="text-xs text-gray-600 dark:text-gray-400">
             {currentTool.subtitle}
           </p>
         </Link>
         {!isPaused && (
-          <span className="text-2xl font-bold tabular-nums text-gray-200 dark:text-gray-700 ml-3 mt-0.5 select-none">
+          <span className="text-2xl font-bold tabular-nums text-gray-300 dark:text-gray-700 ml-3 mt-0.5 select-none">
             {countdown}
           </span>
         )}

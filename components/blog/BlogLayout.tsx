@@ -104,7 +104,7 @@ export default function BlogLayout({ children }: { children: React.ReactNode }) 
                 <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                   Test your jackpot picks risk free.
                 </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500 mt-3">
+                <p className="text-xs text-gray-600 dark:text-gray-500 mt-3">
                   &copy; {new Date().getFullYear()} Zeqqat. All rights reserved.
                 </p>
               </div>

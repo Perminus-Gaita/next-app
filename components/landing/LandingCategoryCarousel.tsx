@@ -124,7 +124,7 @@ export default function LandingCategoryCarousel() {
               <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                 {cat.title}
               </h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 leading-snug">
+              <p className="text-xs text-gray-600 dark:text-gray-400 leading-snug">
                 {cat.description}
               </p>
             </Link>

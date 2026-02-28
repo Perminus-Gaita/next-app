@@ -59,27 +59,27 @@ export default function DrawProbabilityCalculator() {
 
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Actual Draw Rate</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Actual Draw Rate</p>
           <p className="text-xl font-bold text-violet-600 dark:text-blue-400">{league.drawRate}%</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{league.name}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{league.name}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Odds Imply</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Odds Imply</p>
           <p className="text-xl font-bold text-gray-900 dark:text-white">{avgImplied.toFixed(1)}%</p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{impliedProbMin.toFixed(1)}–{impliedProbMax.toFixed(1)}%</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{impliedProbMin.toFixed(1)}–{impliedProbMax.toFixed(1)}%</p>
         </div>
         <div className={`rounded-lg shadow-sm dark:shadow-none p-3 text-center ${
           diff > 0 ? "bg-white dark:bg-green-500/20" : "bg-white dark:bg-red-500/20"
         }`}>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Edge</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Edge</p>
           <p className={`text-xl font-bold ${diff > 0 ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"}`}>
             {diff > 0 ? "+" : ""}{diff.toFixed(1)}%
           </p>
-          <p className="text-xs text-gray-500 dark:text-gray-400">{diff > 0 ? "Value zone" : "No value"}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{diff > 0 ? "Value zone" : "No value"}</p>
         </div>
       </div>
 
-      <p className="text-xs text-gray-500 dark:text-gray-400">
+      <p className="text-xs text-gray-600 dark:text-gray-400">
         Based on historical data from top leagues. Draw rates vary by season and matchday context.
       </p>
     </div>

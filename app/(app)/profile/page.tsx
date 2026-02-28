@@ -34,7 +34,7 @@ export default function ProfilePage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
       </div>
     );
   }
@@ -60,7 +60,7 @@ export default function ProfilePage() {
             />
           ) : (
             <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-              <User className="w-12 h-12 text-gray-400" />
+              <User className="w-12 h-12 text-gray-500" />
             </div>
           )}
         </div>
@@ -83,7 +83,7 @@ export default function ProfilePage() {
                   )}
                 </button>
                 <button onClick={() => setEditing(false)}>
-                  <X className="w-5 h-5 text-gray-400" />
+                  <X className="w-5 h-5 text-gray-500" />
                 </button>
               </div>
             ) : (
@@ -92,7 +92,7 @@ export default function ProfilePage() {
                   {user.name || "Anonymous"}
                 </h1>
                 <button onClick={openEdit}>
-                  <Pencil className="w-4 h-4 text-gray-400 hover:text-gray-600" />
+                  <Pencil className="w-4 h-4 text-gray-500 hover:text-gray-600" />
                 </button>
               </div>
             )}

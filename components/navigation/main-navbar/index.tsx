@@ -95,7 +95,7 @@ export default function MainNavbar({ openLeftSidebar, onToggleSidebar }: MainNav
             disabled={isDrawerOpen}
             className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border border-dashed transition-colors ${
               isDrawerOpen
-                ? "bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 border-gray-300 dark:border-gray-700 cursor-not-allowed"
+                ? "bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-600 border-gray-300 dark:border-gray-700 cursor-not-allowed"
                 : "bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700"
             }`}
           >

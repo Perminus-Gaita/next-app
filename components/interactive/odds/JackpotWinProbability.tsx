@@ -37,7 +37,7 @@ export default function JackpotWinProbability() {
               >{n} games</button>
             ))}
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
             {totalGames === 13 ? "Midweek Jackpot" : totalGames === 17 ? "Mega Jackpot" : "Mega Jackpot Pro"}
           </p>
         </div>
@@ -47,7 +47,7 @@ export default function JackpotWinProbability() {
             onChange={(e) => setDoubleChanceGames(parseInt(e.target.value))}
             className="w-full accent-slate-700 dark:accent-blue-400"
             style={{ background: "rgba(0,0,0,0.08)" }} />
-          <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400">
+          <div className="flex justify-between text-xs text-gray-600 dark:text-gray-400">
             <span>0 (cheapest)</span><span>{totalGames} (best odds)</span>
           </div>
         </div>
@@ -55,17 +55,17 @@ export default function JackpotWinProbability() {
 
       <div className="grid grid-cols-3 gap-3 mb-4">
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Your Odds</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Your Odds</p>
           <p className="text-lg font-bold text-gray-900 dark:text-white">1 in {oneIn.toLocaleString()}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Probability</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Probability</p>
           <p className="text-lg font-bold text-violet-600 dark:text-blue-400">
             {percentage < 0.001 ? percentage.toExponential(2) : percentage.toFixed(4)}%
           </p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Bet Cost</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Bet Cost</p>
           <p className="text-lg font-bold text-orange-600 dark:text-orange-400">KSH {totalCost.toLocaleString()}</p>
         </div>
       </div>

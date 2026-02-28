@@ -59,7 +59,7 @@ function ComponentCard({ info }: { info: ComponentInfo }) {
             {info.name}
           </h2>
           <p className="text-sm text-gray-500 dark:text-gray-400">{info.description}</p>
-          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 font-mono">{info.importPath}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-500 mt-1 font-mono">{info.importPath}</p>
         </div>
         <button
           onClick={() => setOpen(!open)}
@@ -80,7 +80,7 @@ function ComponentCard({ info }: { info: ComponentInfo }) {
               className="flex items-center justify-between py-1.5 text-sm hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
             >
               <span className="text-gray-700 dark:text-gray-300">{article.title}</span>
-              <span className="flex items-center gap-1 text-xs text-gray-400 dark:text-gray-500">
+              <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-500">
                 {article.category}
                 <ExternalLink className="w-3 h-3" />
               </span>
@@ -90,7 +90,7 @@ function ComponentCard({ info }: { info: ComponentInfo }) {
       )}
 
       {open && info.usedIn.length === 0 && (
-        <div className="mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm text-gray-400 dark:text-gray-500">
+        <div className="mb-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 text-sm text-gray-500 dark:text-gray-500">
           Not used in any published article yet.
         </div>
       )}

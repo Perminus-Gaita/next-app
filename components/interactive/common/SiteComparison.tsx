@@ -46,7 +46,7 @@ export default function SiteComparison({ variant = "jackpot" }: { variant?: "jac
                 <span className="text-sm font-bold text-gray-900 dark:text-white">{site.rating}</span>
               </div>
             </div>
-            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+            <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-600 dark:text-gray-400">
               <span>Min: {site.minStake}</span><span>Payout: {site.payout}</span>
               <span>{site.app ? "📱 App" : ""} {site.sms ? "💬 SMS" : ""}</span>
             </div>

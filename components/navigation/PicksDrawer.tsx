@@ -304,7 +304,7 @@ const PicksDrawer = () => {
             {picks.length === 0 && !isStrategyRunning ? (
               <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
                 <p className="text-gray-500 dark:text-gray-400 mb-2">Your pickslip is empty</p>
-                <p className="text-sm text-gray-400 dark:text-gray-500">
+                <p className="text-sm text-gray-500 dark:text-gray-500">
                   Add some picks to get started
                 </p>
               </div>
@@ -332,7 +332,7 @@ const PicksDrawer = () => {
                       {pick.homeTeam} vs {pick.awayTeam}
                     </div>
 
-                    <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-2">
+                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400 mb-2">
                       <span className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded-sm">
                         {pick.competition}
                       </span>

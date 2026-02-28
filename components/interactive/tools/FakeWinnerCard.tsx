@@ -17,12 +17,12 @@ export default function FakeWinnerCard() {
         <div>
           <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Your Name</label>
           <input type="text" value={name} onChange={(e) => setName(e.target.value)} placeholder="Enter your name"
-            className="w-full px-3 py-2 rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none text-gray-900 dark:text-white text-sm border-0 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500" />
+            className="w-full px-3 py-2 rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none text-gray-900 dark:text-white text-sm border-0 outline-none placeholder:text-gray-500 dark:placeholder:text-gray-500" />
         </div>
         <div>
           <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Amount (KSH)</label>
           <input type="text" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="100,000,000"
-            className="w-full px-3 py-2 rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none text-gray-900 dark:text-white text-sm border-0 outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500" />
+            className="w-full px-3 py-2 rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none text-gray-900 dark:text-white text-sm border-0 outline-none placeholder:text-gray-500 dark:placeholder:text-gray-500" />
         </div>
       </div>
 
@@ -48,7 +48,7 @@ export default function FakeWinnerCard() {
         <p className="text-xs opacity-60 mt-4">For entertainment purposes only.</p>
       </div>
 
-      <p className="text-xs text-gray-500 dark:text-gray-400 text-center mt-3">Screenshot and share with your friends!</p>
+      <p className="text-xs text-gray-600 dark:text-gray-400 text-center mt-3">Screenshot and share with your friends!</p>
     </div>
   );
 }

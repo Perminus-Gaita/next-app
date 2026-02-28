@@ -35,7 +35,7 @@ export default function InteractiveWrapper({
       )}
 
       {caption && (
-        <figcaption className="text-xs text-gray-400 dark:text-gray-500 text-center mt-2">
+        <figcaption className="text-xs text-gray-600 dark:text-gray-500 text-center mt-2">
           {caption}
         </figcaption>
       )}

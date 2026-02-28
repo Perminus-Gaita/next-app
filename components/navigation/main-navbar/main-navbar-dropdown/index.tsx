@@ -81,7 +81,7 @@ export default function MainNavbarDropdown({
                 <div className={`${mode === 'dark' ? 'text-white' : 'text-gray-900'} font-semibold text-sm`}>
                   {user?.name || 'User'}
                 </div>
-                <div className={`${mode === 'dark' ? 'text-gray-400' : 'text-gray-600'} text-xs`}>
+                <div className={`${mode === 'dark' ? 'text-gray-500' : 'text-gray-600'} text-xs`}>
                   {user?.email || ''}
                 </div>
               </div>
@@ -94,9 +94,9 @@ export default function MainNavbarDropdown({
           <div className="flex items-center justify-between p-2 rounded-lg">
             <div className="flex items-center space-x-3">
               {mode === "light" ? (
-                <Sun className={`w-4 h-4 ${mode === 'light' ? 'text-gray-400' : 'text-gray-600'}`} />
+                <Sun className={`w-4 h-4 ${mode === 'light' ? 'text-gray-500' : 'text-gray-600'}`} />
               ) : (
-                <Moon className={`w-4 h-4 ${mode === 'dark' ? 'text-gray-400' : 'text-gray-600'}`} />
+                <Moon className={`w-4 h-4 ${mode === 'dark' ? 'text-gray-500' : 'text-gray-600'}`} />
               )}
               <span className={`${mode === 'dark' ? 'text-white' : 'text-gray-900'} text-sm`}>
                 Theme

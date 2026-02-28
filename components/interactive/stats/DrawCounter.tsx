@@ -36,7 +36,7 @@ export default function DrawCounter() {
       <div className="space-y-2 mb-5">
         {matches.map((match) => (
           <div key={match.id} className="flex items-center gap-2">
-            <span className="text-xs text-gray-500 dark:text-gray-400 w-5">{match.id}.</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400 w-5">{match.id}.</span>
             <span className="text-sm text-gray-700 dark:text-gray-300 flex-1 truncate">{match.home} vs {match.away}</span>
             <div className="flex gap-1">
               {(["H", "D", "A"] as const).map((pick) => (
@@ -57,19 +57,19 @@ export default function DrawCounter() {
 
       <div className="grid grid-cols-4 gap-2">
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-2 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">Picked</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Picked</p>
           <p className="text-lg font-bold text-gray-900 dark:text-white">{picked.length}/{matches.length}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-2 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">Home</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Home</p>
           <p className="text-lg font-bold text-green-600 dark:text-green-400">{homes.length}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-2 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">Draw</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Draw</p>
           <p className="text-lg font-bold text-gray-700 dark:text-gray-200">{draws.length}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-2 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400">Away</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Away</p>
           <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{aways.length}</p>
         </div>
       </div>

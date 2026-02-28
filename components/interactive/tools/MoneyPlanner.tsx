@@ -44,11 +44,11 @@ export default function MoneyPlanner() {
 
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="rounded-lg bg-white shadow-sm dark:bg-red-500/20 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Withholding Tax (20%)</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Withholding Tax (20%)</p>
           <p className="text-lg font-bold text-red-600 dark:text-red-400">{formatM(tax)}</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-green-500/20 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">You Receive</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">You Receive</p>
           <p className="text-lg font-bold text-green-600 dark:text-green-400">{formatM(afterTax)}</p>
         </div>
       </div>

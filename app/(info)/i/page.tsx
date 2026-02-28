@@ -69,7 +69,7 @@ export default function BlogHomePage() {
       </div>
 
       {articles.length === 0 && (
-        <p className="text-sm text-gray-400 text-center">
+        <p className="text-sm text-gray-500 text-center">
           Articles coming soon.
         </p>
       )}

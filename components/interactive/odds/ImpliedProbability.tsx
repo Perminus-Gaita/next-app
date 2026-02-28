@@ -28,9 +28,9 @@ export default function ImpliedProbability() {
             style={{ background: "rgba(0,0,0,0.08)" }}
           />
           <div className="flex justify-between mt-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">1.05</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">1.05</span>
             <span className="text-lg font-bold text-gray-900 dark:text-white">{odds.toFixed(2)}</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">10.00</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">10.00</span>
           </div>
         </div>
 
@@ -45,26 +45,26 @@ export default function ImpliedProbability() {
             style={{ background: "rgba(0,0,0,0.08)" }}
           />
           <div className="flex justify-between mt-1">
-            <span className="text-xs text-gray-500 dark:text-gray-400">1%</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">1%</span>
             <span className="text-lg font-bold text-gray-900 dark:text-white">{yourProbability}%</span>
-            <span className="text-xs text-gray-500 dark:text-gray-400">99%</span>
+            <span className="text-xs text-gray-600 dark:text-gray-400">99%</span>
           </div>
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Implied Probability</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Implied Probability</p>
           <p className="text-xl font-bold text-gray-900 dark:text-white">{impliedProb.toFixed(1)}%</p>
         </div>
         <div className="rounded-lg bg-white shadow-sm dark:bg-white/10 dark:shadow-none p-3 text-center">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Your Estimate</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Your Estimate</p>
           <p className="text-xl font-bold text-gray-900 dark:text-white">{yourProbability}%</p>
         </div>
         <div className={`rounded-lg shadow-sm dark:shadow-none p-3 text-center ${
           hasValue ? "bg-white dark:bg-green-500/20" : "bg-white dark:bg-red-500/20"
         }`}>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Edge</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Edge</p>
           <p className={`text-xl font-bold ${
             hasValue ? "text-green-600 dark:text-green-400" : "text-red-600 dark:text-red-400"
           }`}>
