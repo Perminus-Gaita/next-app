@@ -70,7 +70,7 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
   const profileHref = user?.username ? `/${user.username}` : "/";
 
   const topNavItems: NavItemType[] = [
-    { href: "/", icon: Home, label: "Nyumbani" },
+    { href: "/nyumbani", icon: Home, label: "Nyumbani" },
     { href: "/i", icon: BookOpen, label: "Blogs" },
     { href: "/about", icon: Info, label: "About" },
     { href: profileHref, icon: User, label: "Profile" },
@@ -85,6 +85,8 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
     ? pathname === `/${user.username}`
     : false;
 
+  const isNyumbaniActive = pathname === "/nyumbani" || pathname.startsWith("/j/");
+
   return (
     <aside className="h-full overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col h-full">
@@ -96,17 +98,15 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
               isActive={
                 item.label === "Profile"
                   ? isProfileActive
-                  : item.href === "/"
-                    ? pathname === "/"
-                    : pathname === item.href ||
-                      (pathname?.startsWith(item.href + "/") ?? false)
+                  : item.label === "Nyumbani"
+                    ? isNyumbaniActive
+                    : pathname.startsWith(item.href)
               }
               openLeftSidebar={openLeftSidebar}
               onClose={onClose}
             />
           ))}
         </div>
-
         <div className="py-4 border-t border-gray-200 dark:border-gray-800">
           {bottomNavItems.map((item, index) => (
             <NavItem
