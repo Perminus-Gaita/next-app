@@ -27,7 +27,7 @@ const JackpotTabsNav: React.FC<JackpotTabsNavProps> = ({ jackpotId }) => {
   };
 
   return (
-    <div className="flex border-b border-border sticky top-0 z-10 bg-card">
+    <div className="flex border-b border-border sticky top-0 z-10">
       {tabs.map((tab) => (
         <Link
           key={tab.segment}
