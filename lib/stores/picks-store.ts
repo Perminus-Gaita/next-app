@@ -13,6 +13,8 @@ export interface Pick {
 
 interface PicksState {
   picks: Pick[];
+  jackpotId: string | null;
+  totalEvents: number;
   isDrawerOpen: boolean;
   isStrategyRunning: boolean;
   selectedStrategy: string | null;
@@ -25,10 +27,14 @@ interface PicksState {
   toggleDrawer: () => void;
   setStrategyRunning: (running: boolean) => void;
   setSelectedStrategy: (strategyId: string | null) => void;
+  setJackpotId: (id: string | null) => void;
+  setTotalEvents: (total: number) => void;
 }
 
 export const usePicksStore = create<PicksState>((set) => ({
   picks: [],
+  jackpotId: null,
+  totalEvents: 0,
   isDrawerOpen: false,
   isStrategyRunning: false,
   selectedStrategy: null,
@@ -61,4 +67,6 @@ export const usePicksStore = create<PicksState>((set) => ({
 
   setStrategyRunning: (running) => set({ isStrategyRunning: running }),
   setSelectedStrategy: (strategyId) => set({ selectedStrategy: strategyId }),
+  setJackpotId: (id) => set({ jackpotId: id }),
+  setTotalEvents: (total) => set({ totalEvents: total }),
 }));

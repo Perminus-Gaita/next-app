@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import React, { useState, useMemo } from 'react';
 import { Loader2, Lock, EyeOff, Trophy, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPredictionDate, getDiceBearAvatar } from '../../../utils/helpers';

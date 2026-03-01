@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { useAuth, authClient } from "@/lib/auth/client";
-import { Loader2, Pencil, X, Check, User } from "lucide-react";
+import { Loader2, Pencil, X, Check, User, Calendar, ScrollText, MessageSquare } from "lucide-react";
+import { getDiceBearAvatar } from "@/features/jackpots/utils/helpers";
 
 export default function ProfilePage() {
   const { user, isLoading } = useAuth();
@@ -33,7 +34,7 @@ export default function ProfilePage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <Loader2 className="w-8 h-8 animate-spin text-gray-500" />
       </div>
     );
@@ -41,17 +42,22 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-[60vh]">
         <p className="text-gray-500">Not signed in.</p>
       </div>
     );
   }
 
+  const memberSince = new Date(user.createdAt).toLocaleDateString('en-US', {
+    month: 'long',
+    year: 'numeric',
+  });
+
   return (
-    <div className="max-w-2xl mx-auto p-4 pt-16">
-      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm overflow-hidden">
+    <div className="max-w-2xl mx-auto -mt-8">
+      <div className="bg-white dark:bg-gray-800 border-x border-b border-border overflow-hidden">
         {/* Avatar */}
-        <div className="flex flex-col items-center pt-8 pb-4">
+        <div className="flex flex-col items-center pt-8 pb-4 px-4">
           {user.image ? (
             <img
               src={user.image}
@@ -59,14 +65,16 @@ export default function ProfilePage() {
               className="w-24 h-24 rounded-full object-cover border-4 border-white dark:border-gray-700 shadow"
             />
           ) : (
-            <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-              <User className="w-12 h-12 text-gray-500" />
-            </div>
+            <img
+              src={getDiceBearAvatar((user as any).username || user.name || 'anon')}
+              alt="Profile"
+              className="w-24 h-24 rounded-full border-4 border-white dark:border-gray-700 shadow"
+            />
           )}
         </div>
 
         {/* Info */}
-        <div className="px-4 pb-6 space-y-4">
+        <div className="px-4 pb-4 space-y-2">
           <div className="text-center">
             {editing ? (
               <div className="flex items-center justify-center gap-2">
@@ -96,10 +104,18 @@ export default function ProfilePage() {
                 </button>
               </div>
             )}
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-              {user.email}
-            </p>
+            {(user as any).username && (
+              <p className="text-sm text-muted-foreground mt-0.5">
+                @{(user as any).username}
+              </p>
+            )}
           </div>
+        </div>
+
+        {/* Member since */}
+        <div className="flex items-center justify-center gap-1.5 pb-4">
+          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+          <span className="text-xs text-muted-foreground">Joined {memberSince}</span>
         </div>
       </div>
     </div>

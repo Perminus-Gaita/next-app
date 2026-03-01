@@ -13,13 +13,16 @@ interface MatchCardProps {
 }
 
 const MatchCard: React.FC<MatchCardProps> = ({ event, jackpotId, onSelect, isFinished = false, isLast = false }) => {
-  const { picks, addPick, removePickByEvent } = usePicksStore();
+  const { picks, addPick, removePickByEvent, setJackpotId } = usePicksStore();
   const existingPick = picks.find((p) => p.eventNumber === event.eventNumber);
   const currentSelection = existingPick?.selection || undefined;
 
   const handlePickSelect = (pick: LocalPick, e: React.MouseEvent) => {
     e.stopPropagation();
     if (isFinished) return;
+
+    // Always keep the store aware of which jackpot we're picking for
+    setJackpotId(jackpotId);
 
     if (currentSelection === pick) {
       removePickByEvent(event.eventNumber);

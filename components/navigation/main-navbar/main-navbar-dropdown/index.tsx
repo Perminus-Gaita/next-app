@@ -2,6 +2,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Moon, Sun, LogOut } from 'lucide-react';
 import { Switch } from "@/components/ui/switch";
+import Link from 'next/link';
 
 interface MainNavbarDropdownProps {
   isOpen: boolean;
@@ -51,6 +52,7 @@ export default function MainNavbarDropdown({
   if (!isOpen) return null;
 
   const mode = theme;
+  const profileHref = user?.username ? `/${user.username}` : '/profile';
 
   return (
     <div
@@ -60,34 +62,36 @@ export default function MainNavbarDropdown({
       } rounded-2xl shadow-2xl border z-50`}
     >
       <div className="h-full flex flex-col">
-        {/* Profile Section */}
-        <div className={`p-4 ${mode === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b`}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center">
-                {user?.image ? (
-                  <img 
-                    src={user.image} 
-                    alt={user.name} 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <span className="text-white text-sm font-bold">
-                    {user?.name?.charAt(0) || '?'}
-                  </span>
-                )}
+        {/* Profile Section - clickable link to /[username] */}
+        <Link
+          href={profileHref}
+          onClick={onClose}
+          className={`block p-4 ${mode === 'dark' ? 'border-gray-700 hover:bg-gray-800' : 'border-gray-200 hover:bg-gray-50'} border-b transition-colors`}
+        >
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-full overflow-hidden bg-gradient-to-r from-pink-500 to-orange-500 flex items-center justify-center">
+              {user?.image ? (
+                <img 
+                  src={user.image} 
+                  alt={user.name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-white text-sm font-bold">
+                  {user?.name?.charAt(0) || '?'}
+                </span>
+              )}
+            </div>
+            <div>
+              <div className={`${mode === 'dark' ? 'text-white' : 'text-gray-900'} font-semibold text-sm`}>
+                {user?.name || 'User'}
               </div>
-              <div>
-                <div className={`${mode === 'dark' ? 'text-white' : 'text-gray-900'} font-semibold text-sm`}>
-                  {user?.name || 'User'}
-                </div>
-                <div className={`${mode === 'dark' ? 'text-gray-500' : 'text-gray-600'} text-xs`}>
-                  {user?.username ? `@${user.username}` : ''}
-                </div>
+              <div className={`${mode === 'dark' ? 'text-gray-500' : 'text-gray-600'} text-xs`}>
+                {user?.username ? `@${user.username}` : ''}
               </div>
             </div>
           </div>
-        </div>
+        </Link>
 
         {/* Theme Toggle Section */}
         <div className={`p-3 ${mode === 'dark' ? 'border-gray-700' : 'border-gray-200'} border-b`}>

@@ -2,10 +2,12 @@
 import { useRef, useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { usePicksStore } from "@/lib/stores/picks-store";
-import { X, ScrollText, Trash2, AlertCircle, Loader2, Save } from "lucide-react";
+import { X, ScrollText, Trash2, AlertCircle, Loader2, Save, CheckCircle2 } from "lucide-react";
+
+const MIN_PICKS_TO_WIN = 13;
 
 const PicksDrawer = () => {
-  const { picks, isDrawerOpen, isStrategyRunning, removePick, clearPicks, closeDrawer } = usePicksStore();
+  const { picks, jackpotId, totalEvents, isDrawerOpen, isStrategyRunning, removePick, clearPicks, closeDrawer } = usePicksStore();
   const drawerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -19,8 +21,16 @@ const PicksDrawer = () => {
   const [pickName, setPickName] = useState("");
   const [pickToRemove, setPickToRemove] = useState<string | null>(null);
 
+  // Save state
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+
   // Track previous picks count for auto-scroll
   const prevPicksCount = useRef(picks.length);
+
+  const canSave = picks.length >= MIN_PICKS_TO_WIN && pickName.trim().length > 0 && !isSaving;
+  const picksNeeded = MIN_PICKS_TO_WIN - picks.length;
 
   useEffect(() => {
     setPortalElement(document.body);
@@ -29,7 +39,6 @@ const PicksDrawer = () => {
   // Auto-scroll to bottom when new picks arrive during strategy
   useEffect(() => {
     if (picks.length > prevPicksCount.current && isStrategyRunning) {
-      // Scroll the content area to the bottom smoothly
       if (bottomRef.current) {
         bottomRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
       }
@@ -37,8 +46,16 @@ const PicksDrawer = () => {
     prevPicksCount.current = picks.length;
   }, [picks.length, isStrategyRunning]);
 
+  // Clear success message after a delay
+  useEffect(() => {
+    if (saveSuccess) {
+      const timer = setTimeout(() => setSaveSuccess(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [saveSuccess]);
+
   const handleClose = () => {
-    if (isStrategyRunning) return; // Don't close during strategy
+    if (isStrategyRunning) return;
     if (isModalOpen) {
       closeModal();
       return;
@@ -120,14 +137,45 @@ const PicksDrawer = () => {
     return pick ? `${pick.homeTeam} vs ${pick.awayTeam}` : "";
   };
 
-  const handleSavePicks = () => {
-    if (!pickName.trim()) {
-      alert("Please enter a name for your picks");
+  const handleSavePicks = async () => {
+    if (!canSave || !jackpotId) {
+      if (!jackpotId) {
+        setSaveError("No jackpot selected. Please pick matches first.");
+      }
       return;
     }
-    console.log("Saving picks:", { name: pickName, picks });
-    alert(`Picks "${pickName}" saved! (This is dummy data)`);
-    setPickName("");
+
+    setIsSaving(true);
+    setSaveError(null);
+    setSaveSuccess(false);
+
+    try {
+      // Map picks to the API format
+      const apiPicks = picks.map(p => ({
+        gameNumber: p.eventNumber,
+        pick: p.selection, // "Home", "Draw", "Away" — the API handler maps these
+      }));
+
+      const res = await fetch(`/api/jackpots/${jackpotId}/picks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: pickName.trim(), picks: apiPicks }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error || "Failed to save picks");
+      }
+
+      setSaveSuccess(true);
+      setPickName("");
+      // Clear picks after successful save
+      clearPicks();
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "Failed to save picks. Please try again.");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   if (!portalElement) return null;
@@ -174,195 +222,150 @@ const PicksDrawer = () => {
         <div
           className="fixed inset-0 bg-black/30 z-40"
           onClick={isModalOpen || isStrategyRunning ? undefined : handleClose}
-          style={{ position: 'fixed' }}
         />
       )}
 
       {/* Drawer */}
       <aside
         ref={drawerRef}
-        className={`
-          fixed top-12 right-0 h-[calc(100vh-49px)] z-50
-          border-l border-gray-200 dark:border-gray-700
-          bg-white dark:bg-gray-900
-          transition-transform duration-300 ease-in-out
-          ${getWidth()}
-          ${isDrawerOpen ? "translate-x-0" : "translate-x-full"}
-          shadow-lg overflow-hidden flex flex-col
-        `}
-        style={{
-          position: 'fixed',
-          transform: isDrawerOpen ? 'translateX(0)' : 'translateX(100%)',
-          willChange: 'transform'
-        }}
-        aria-hidden={!isDrawerOpen}
+        className={`fixed top-0 right-0 h-full ${getWidth()} bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-700 shadow-xl transform transition-transform duration-300 ease-in-out z-50 flex flex-col ${
+          isDrawerOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700 shrink-0">
+        <div className="shrink-0 flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex items-center gap-2">
-            <ScrollText className="h-5 w-5 text-primary" />
-            <h2 className="text-lg font-bold">PICKSLIP: {picks.length}</h2>
+            <ScrollText className="w-5 h-5 text-gray-700 dark:text-gray-300" />
+            <h2 className="font-bold text-gray-900 dark:text-white">Pick Slip</h2>
+            <span className="bg-primary text-primary-foreground text-xs font-bold px-2 py-0.5 rounded-full">
+              {picks.length}{totalEvents > 0 ? `/${totalEvents}` : ''}
+            </span>
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center gap-2">
             {picks.length > 0 && !isStrategyRunning && (
               <button
                 onClick={confirmClearPicks}
-                className="p-1 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 mr-2 text-red-500"
-                title="Clear all picks"
+                className="text-xs text-red-500 hover:text-red-600 font-medium"
               >
-                <Trash2 className="h-4 w-4" />
+                Clear all
               </button>
             )}
-            {!isStrategyRunning && (
-              <button
-                onClick={handleClose}
-                className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            )}
+            <button
+              onClick={handleClose}
+              disabled={isStrategyRunning}
+              className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 disabled:opacity-50"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
-        {/* Strategy Running Indicator - sticky below header */}
-        {isStrategyRunning && (
-          <div className="px-4 py-2.5 bg-primary/10 border-b border-primary/20 flex items-center gap-2 shrink-0">
-            <Loader2 className="h-4 w-4 text-primary animate-spin" />
-            <span
-              className="text-sm font-semibold text-primary"
-              style={{ animation: 'strategyPulse 1.5s ease-in-out infinite' }}
-            >
-              Strategy running...
-            </span>
-          </div>
-        )}
-
-        {/* Inline Confirmation Modal */}
-        {isModalOpen && (
-          <div className="absolute inset-0 bg-white/95 dark:bg-gray-900/95 z-10 flex items-center justify-center">
-            <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-[90%] max-w-70 shadow-lg border border-gray-200 dark:border-gray-700">
-              {modalType === "single" && (
-                <>
-                  <div className="flex items-center mb-3">
-                    <AlertCircle className="text-yellow-500 h-5 w-5 mr-2 shrink-0" />
-                    <h3 className="text-base font-bold">Confirm Removal</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                    Are you sure you want to remove &ldquo;{getPickEventName()}&rdquo; from your picks?
-                  </p>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={closeModal}
-                      className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleRemovePick}
-                      className="px-3 py-1.5 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </>
-              )}
-              {modalType === "all" && (
-                <>
-                  <div className="flex items-center mb-3">
-                    <AlertCircle className="text-yellow-500 h-5 w-5 mr-2 shrink-0" />
-                    <h3 className="text-base font-bold">Clear All Picks</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
-                    Are you sure you want to clear all picks from your pickslip?
-                  </p>
-                  <div className="flex justify-end space-x-2">
-                    <button
-                      onClick={closeModal}
-                      className="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-600 transition"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleClearAllPicks}
-                      className="px-3 py-1.5 bg-red-500 text-white rounded text-sm hover:bg-red-600 transition"
-                    >
-                      Clear All
-                    </button>
-                  </div>
-                </>
-              )}
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto pickslip-content" ref={contentRef}>
+          {picks.length === 0 && !isStrategyRunning ? (
+            <div className="flex flex-col items-center justify-center h-full text-center p-6">
+              <ScrollText className="w-12 h-12 text-gray-300 dark:text-gray-600 mb-3" />
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">No picks yet</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">
+                Select Home, Draw or Away on match cards
+              </p>
             </div>
-          </div>
-        )}
+          ) : (
+            <div className="p-3 space-y-2">
+              {/* Strategy running indicator */}
+              {isStrategyRunning && (
+                <div className="flex items-center gap-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg mb-2">
+                  <Loader2 className="w-4 h-4 animate-spin text-blue-500" />
+                  <span className="text-xs text-blue-600 dark:text-blue-400 font-medium" style={{ animation: 'strategyPulse 2s infinite' }}>
+                    Running strategy...
+                  </span>
+                </div>
+              )}
 
-        {/* Scrollable content area */}
-        <div
-          ref={contentRef}
-          className="flex-1 overflow-y-auto pickslip-content"
-        >
-          <div className="p-4">
-            {picks.length === 0 && !isStrategyRunning ? (
-              <div className="flex flex-col items-center justify-center h-full min-h-[200px] text-center">
-                <p className="text-gray-500 dark:text-gray-400 mb-2">Your pickslip is empty</p>
-                <p className="text-sm text-gray-500 dark:text-gray-500">
-                  Add some picks to get started
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {picks.map((pick, index) => (
-                  <div
-                    key={pick.id}
-                    className="p-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 animate-in fade-in slide-in-from-right-4 duration-300"
-                    style={{ animationDelay: `${index * 30}ms` }}
-                  >
-                    <div className="flex justify-between mb-2">
-                      <span className="font-medium text-sm">Match {pick.eventNumber}</span>
-                      {!isStrategyRunning && (
-                        <button
-                          onClick={() => confirmRemovePick(pick.id)}
-                          className="text-red-500 text-sm hover:text-red-600"
-                        >
-                          Remove
-                        </button>
-                      )}
-                    </div>
-
-                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                      {pick.homeTeam} vs {pick.awayTeam}
-                    </div>
-
-                    <div className="flex items-center text-xs text-gray-600 dark:text-gray-400 mb-2">
-                      <span className="bg-gray-100 dark:bg-gray-700 px-1.5 py-0.5 rounded-sm">
+              {picks.map((pick) => (
+                <div
+                  key={pick.id}
+                  className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                >
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-xs font-bold text-muted-foreground bg-muted px-1.5 py-0.5 rounded">
+                        #{pick.eventNumber}
+                      </span>
+                      <span className="text-xs text-muted-foreground truncate">
                         {pick.competition}
                       </span>
                     </div>
-
-                    <div className="flex justify-between text-sm">
-                      <span>Pick: {pick.selection}</span>
-                      <span className="font-bold">Odds: {pick.odds.toFixed(2)}</span>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                      {pick.homeTeam} vs {pick.awayTeam}
+                    </div>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs font-semibold text-primary">
+                        {pick.selection === "Home" ? "1" : pick.selection === "Draw" ? "X" : "2"} — {pick.selection}
+                      </span>
+                      <span className="text-xs text-muted-foreground">@{pick.odds.toFixed(2)}</span>
                     </div>
                   </div>
-                ))}
 
-                {/* Spacer that shrinks as picks fill in - gives the "filling up" feel */}
-                {isStrategyRunning && (
-                  <div
-                    className="transition-all duration-500 ease-out"
-                    style={{ minHeight: `${Math.max(0, 300 - picks.length * 25)}px` }}
-                  />
-                )}
+                  {!isStrategyRunning && (
+                    <button
+                      onClick={() => confirmRemovePick(pick.id)}
+                      className="ml-2 p-1.5 text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+              ))}
 
-                {/* Scroll anchor */}
-                <div ref={bottomRef} />
-              </div>
-            )}
-          </div>
+              {/* Spacer that shrinks as picks fill in */}
+              {isStrategyRunning && (
+                <div
+                  className="transition-all duration-500 ease-out"
+                  style={{ minHeight: `${Math.max(0, 300 - picks.length * 25)}px` }}
+                />
+              )}
+
+              {/* Scroll anchor */}
+              <div ref={bottomRef} />
+            </div>
+          )}
         </div>
 
         {/* Sticky Save Picks button at bottom - only after strategy finishes */}
         {!isStrategyRunning && picks.length > 0 && (
           <div className="shrink-0 p-4 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            {/* Minimum picks warning */}
+            {picks.length < MIN_PICKS_TO_WIN && (
+              <div className="flex items-start gap-2 p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg mb-3">
+                <AlertCircle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs font-medium text-amber-700 dark:text-amber-400">
+                    Need at least {MIN_PICKS_TO_WIN} picks to save
+                  </p>
+                  <p className="text-xs text-amber-600 dark:text-amber-500 mt-0.5">
+                    You need {picksNeeded} more pick{picksNeeded !== 1 ? 's' : ''}. You must pick at least {MIN_PICKS_TO_WIN} of {totalEvents || '17'} games to be eligible for a prize.
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Save error */}
+            {saveError && (
+              <div className="flex items-start gap-2 p-2.5 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg mb-3">
+                <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                <p className="text-xs text-red-600 dark:text-red-400">{saveError}</p>
+              </div>
+            )}
+
+            {/* Save success */}
+            {saveSuccess && (
+              <div className="flex items-center gap-2 p-2.5 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg mb-3">
+                <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                <p className="text-xs text-green-600 dark:text-green-400 font-medium">Picks saved successfully!</p>
+              </div>
+            )}
+
             <div className="mb-3">
               <label className="block text-xs font-medium text-muted-foreground mb-1.5">Pick Name</label>
               <input
@@ -376,12 +379,58 @@ const PicksDrawer = () => {
             </div>
             <button
               onClick={handleSavePicks}
-              disabled={!pickName.trim()}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 active:scale-[0.98] transition-all"
+              disabled={!canSave}
+              className={`w-full flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all ${
+                canSave
+                  ? "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-[0.98]"
+                  : "bg-muted text-muted-foreground cursor-not-allowed"
+              }`}
             >
-              <Save className="w-4 h-4" />
-              Save Picks
+              {isSaving ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <Save className="w-4 h-4" />
+                  Save Picks ({picks.length}/{totalEvents || '?'})
+                </>
+              )}
             </button>
+          </div>
+        )}
+
+        {/* Confirmation Modal */}
+        {isModalOpen && (
+          <div className="absolute inset-0 bg-black/50 z-60 flex items-center justify-center p-4">
+            <div className="bg-white dark:bg-gray-800 rounded-xl p-5 max-w-sm w-full shadow-2xl">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertCircle className="w-5 h-5 text-red-500" />
+                <h3 className="font-semibold text-gray-900 dark:text-white">
+                  {modalType === "all" ? "Clear all picks?" : "Remove pick?"}
+                </h3>
+              </div>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {modalType === "all"
+                  ? "This will remove all picks from your slip."
+                  : `Remove ${getPickEventName()}?`}
+              </p>
+              <div className="flex gap-2">
+                <button
+                  onClick={closeModal}
+                  className="flex-1 py-2 text-sm font-medium bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={modalType === "all" ? handleClearAllPicks : handleRemovePick}
+                  className="flex-1 py-2 text-sm font-medium bg-red-500 text-white rounded-lg hover:bg-red-600"
+                >
+                  {modalType === "all" ? "Clear All" : "Remove"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </aside>

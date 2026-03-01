@@ -1,7 +1,8 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import MatchCard from './MatchCard';
+import { usePicksStore } from '@/lib/stores/picks-store';
 import type { JackpotEvent, LocalPick } from '../../../types';
 
 interface MatchesTabProps {
@@ -13,6 +14,13 @@ interface MatchesTabProps {
 
 const MatchesTab: React.FC<MatchesTabProps> = ({ events, jackpotId, onSelect, jackpotStatus = 'Open' }) => {
   const isFinished = jackpotStatus === 'Finished' || jackpotStatus === 'Closed';
+  const { setTotalEvents, setJackpotId } = usePicksStore();
+
+  useEffect(() => {
+    setTotalEvents(events.length);
+    setJackpotId(jackpotId);
+  }, [events.length, jackpotId, setTotalEvents, setJackpotId]);
+
   return (
     <div>
       {events.map((event, index) => (
