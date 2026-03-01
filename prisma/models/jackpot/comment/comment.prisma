@@ -1,5 +1,5 @@
 model Comment {
-    id        String   @id @default(cuid(2))
+    id        String   @id @default(nanoid(12))
     jackpotId String                    @map("jackpot_id")
     userId    String                    @map("user_id")
     parentId  String?                   @map("parent_id")
@@ -18,5 +18,6 @@ model Comment {
 
     @@index([jackpotId, createdAt])
     @@index([parentId])
+  @@index([createdAt])
     @@map("comments")
 }

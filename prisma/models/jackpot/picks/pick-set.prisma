@@ -1,7 +1,7 @@
 // pick-set.prisma
 
 model PickSet {
-  id        String   @id @default(cuid(2))
+  id        String   @id @default(nanoid(12))
   userId    String                      @map("user_id")
   jackpotId String                      @map("jackpot_id")
   name      String?  @db.VarChar(100)
@@ -11,5 +11,6 @@ model PickSet {
   jackpot Jackpot @relation(fields: [jackpotId], references: [id], onDelete: Cascade)
   picks   Pick[]
 
+  @@index([createdAt])
   @@map("pick_sets")
 }

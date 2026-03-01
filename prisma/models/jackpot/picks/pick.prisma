@@ -1,5 +1,5 @@
 model Pick {
-  id        String     @id @default(cuid(2))
+  id        String     @id @default(nanoid(12))
   userId    String     @map("user_id")
   jackpotId String     @map("jackpot_id")
   eventId   String     @map("event_id")

@@ -1,5 +1,5 @@
 model Jackpot {
-  id            String         @id @default(cuid(2))
+  id            String         @id @default(nanoid(8))
   humanId       Int            @unique             @map("human_id")
   type          JackpotType
   status        JackpotStatus  @default(OPEN)
