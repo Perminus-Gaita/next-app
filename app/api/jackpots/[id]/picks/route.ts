@@ -99,7 +99,7 @@ export async function POST(
       }
     }
 
-    // Create PickSet + Picks in a transaction
+    // Create PickSet + Picks in a transaction (using createMany for performance)
     const pickSet = await prisma.$transaction(async (tx) => {
       const ps = await tx.pickSet.create({
         data: {
@@ -109,18 +109,15 @@ export async function POST(
         },
       });
 
-      for (const p of picks) {
-        const eventId = eventMap.get(p.gameNumber)!;
-        await tx.pick.create({
-          data: {
-            userId: user.id,
-            jackpotId,
-            eventId,
-            pickSetId: ps.id,
-            pick: mapDisplayToPickChoice(p.pick),
-          },
-        });
-      }
+      await tx.pick.createMany({
+        data: picks.map((p: { gameNumber: number; pick: string }) => ({
+          userId: user.id,
+          jackpotId,
+          eventId: eventMap.get(p.gameNumber)!,
+          pickSetId: ps.id,
+          pick: mapDisplayToPickChoice(p.pick),
+        })),
+      });
 
       return ps;
     });
