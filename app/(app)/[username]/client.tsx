@@ -25,7 +25,6 @@ export default function ProfileClient({ username }: ProfileClientProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Tier 1: Own profile — use session data
     const isOwnProfile = sessionUser?.username === username;
     if (isOwnProfile && sessionUser) {
       setProfile({
@@ -38,7 +37,6 @@ export default function ProfileClient({ username }: ProfileClientProps) {
       return;
     }
 
-    // Tier 2: Store has preview data from a clicked link
     if (preview && preview.username === username) {
       setProfile({
         name: preview.name,
@@ -50,7 +48,6 @@ export default function ProfileClient({ username }: ProfileClientProps) {
       return;
     }
 
-    // Tier 3: Fallback — fetch from API (direct URL visit / refresh)
     async function fetchUser() {
       try {
         const res = await fetch(`/api/users/${username}`);
@@ -101,24 +98,23 @@ export default function ProfileClient({ username }: ProfileClientProps) {
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-3 py-4">
-        <Avatar className="h-11 w-11">
+      {/* Profile Header — matches JackpotDetails dimensions */}
+      <div className="border-b p-6 flex flex-col items-center justify-center text-center">
+        <Avatar className="h-16 w-16 mb-3">
           <AvatarImage
             src={profile.image || undefined}
             alt={profile.name || profile.username}
           />
-          <AvatarFallback className="text-sm font-medium bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
+          <AvatarFallback className="text-lg font-medium bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">
             {initials}
           </AvatarFallback>
         </Avatar>
-        <div className="min-w-0">
-          <p className="text-base font-semibold text-gray-900 dark:text-white truncate">
-            {profile.name || profile.username}
-          </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">
-            @{profile.username}
-          </p>
-        </div>
+        <p className="text-base font-semibold text-gray-900 dark:text-white">
+          {profile.name || profile.username}
+        </p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">
+          @{profile.username}
+        </p>
       </div>
     </div>
   );
