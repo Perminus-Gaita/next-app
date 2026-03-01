@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, MoreVertical, Trash2 } from 'lucide-react';
 import { relativeTime, getDiceBearAvatar } from '../../../utils/helpers';
 import type { Comment } from '../../../types';
-import Link from 'next/link';
+import ProfileLink from '@/components/profile/ProfileLink';
 
 function countDescendants(comment: Comment): number {
   if (!comment.replies?.length) return 0;
@@ -216,7 +216,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
       <div style={{ display: 'flex', gap: 10, padding: '10px 0', alignItems: 'flex-start' }}>
         {/* Left: avatar + collapse */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0 }}>
-          <Link href={`/${comment.username || 'anonymous'}`}>
+          <ProfileLink username={comment.username || 'anonymous'} name={comment.username || 'Anonymous'} image={comment.image || null}>
             <img
               data-avatar={comment._id}
               src={comment.image || getDiceBearAvatar(comment.username || 'anon')}
@@ -227,7 +227,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
                 background: 'var(--muted, #1a1a2e)', cursor: 'pointer',
               }}
             />
-          </Link>
+          </ProfileLink>
           {hasChildren && !isCollapsed && (
             <button
               data-collapse={comment._id}
@@ -249,9 +249,9 @@ const CommentItem: React.FC<CommentItemProps> = ({
         {/* Right: content */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div className="flex items-center gap-2 mb-1">
-            <Link href={`/${comment.username || 'anonymous'}`} className="text-sm font-semibold text-foreground hover:underline">
+            <ProfileLink username={comment.username || 'anonymous'} name={comment.username || 'Anonymous'} image={comment.image || null} className="text-sm font-semibold text-foreground hover:underline">
               {comment.username || 'Anonymous'}
-            </Link>
+            </ProfileLink>
             <span className="text-xs text-muted-foreground">•</span>
             <span className="text-xs text-muted-foreground">{relativeTime(comment.createdAt)}</span>
           </div>

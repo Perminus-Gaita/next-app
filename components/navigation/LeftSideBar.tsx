@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import { cn } from "@/lib/utils";
 import { Home, BookOpen, Info, User, Settings, Headset, LucideIcon } from "lucide-react";
+import { useAuth } from "@/lib/auth/client";
 
 interface NavItemType {
   href: string;
@@ -20,8 +21,8 @@ interface NavItemProps {
 }
 
 const NavItem = ({ item, isActive, openLeftSidebar, onClose }: NavItemProps) => {
-  const isMobile = useMediaQuery('(max-width:639px)');
-  const isTablet = useMediaQuery('(min-width:640px) and (max-width:1023px)');
+  const isMobile = useMediaQuery("(max-width:639px)");
+  const isTablet = useMediaQuery("(min-width:640px) and (max-width:1023px)");
   const Icon = item.icon;
 
   const handleClick = () => {
@@ -64,18 +65,25 @@ interface LeftSideBarProps {
 
 export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarProps) {
   const pathname = usePathname();
+  const { user } = useAuth();
+
+  const profileHref = user?.username ? `/${user.username}` : "/";
 
   const topNavItems: NavItemType[] = [
     { href: "/", icon: Home, label: "Nyumbani" },
     { href: "/i", icon: BookOpen, label: "Blogs" },
     { href: "/about", icon: Info, label: "About" },
-    { href: "/profile", icon: User, label: "Profile" },
+    { href: profileHref, icon: User, label: "Profile" },
   ];
 
   const bottomNavItems: NavItemType[] = [
     { href: "/support", icon: Headset, label: "Support" },
     { href: "/settings", icon: Settings, label: "Settings" },
   ];
+
+  const isProfileActive = user?.username
+    ? pathname === `/${user.username}`
+    : false;
 
   return (
     <aside className="h-full overflow-y-auto overflow-x-hidden">
@@ -86,9 +94,12 @@ export default function LeftSideBar({ openLeftSidebar, onClose }: LeftSideBarPro
               key={index}
               item={item}
               isActive={
-                item.href === "/"
-                  ? pathname === "/"
-                  : pathname === item.href || (pathname?.startsWith(item.href + "/") ?? false)
+                item.label === "Profile"
+                  ? isProfileActive
+                  : item.href === "/"
+                    ? pathname === "/"
+                    : pathname === item.href ||
+                      (pathname?.startsWith(item.href + "/") ?? false)
               }
               openLeftSidebar={openLeftSidebar}
               onClose={onClose}
