@@ -18,7 +18,7 @@ export default function StatsPage() {
       setStatsLoading(true);
       try {
         const [predRes, statsRes] = await Promise.all([
-          fetch(`/api/jackpots/${jackpot!._id}/predictions`),
+          fetch(`/api/jackpots/${jackpot!._id}/picks`),
           fetch(`/api/jackpots/${jackpot!._id}/stats`),
         ]);
 

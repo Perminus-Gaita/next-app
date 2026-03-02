@@ -537,7 +537,7 @@ export function usePredictions(jackpotId?: string): UsePredictionsReturn {
     try {
       setLoading(true);
       const response = await fetch(
-        `${API_BASE}/predictions?jackpotId=${jackpotId}`
+        `${API_BASE}/picks?jackpotId=${jackpotId}`
       );
       
       if (!response.ok) {
@@ -565,7 +565,7 @@ export function usePredictions(jackpotId?: string): UsePredictionsReturn {
 
     try {
       const response = await fetch(
-        `${API_BASE}/predictions?jackpotId=${jackpotId}`
+        `${API_BASE}/picks?jackpotId=${jackpotId}`
       );
       
       if (!response.ok) {
@@ -588,7 +588,7 @@ export function usePredictions(jackpotId?: string): UsePredictionsReturn {
 
       try {
         setSubmitting(true);
-        const response = await fetch(`${API_BASE}/predictions`, {
+        const response = await fetch(`${API_BASE}/picks`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jackpotId, picks }),
@@ -622,7 +622,7 @@ export function usePredictions(jackpotId?: string): UsePredictionsReturn {
     async (predictionId: string, picks: PredictionPick[]): Promise<Prediction | null> => {
       try {
         setSubmitting(true);
-        const response = await fetch(`${API_BASE}/predictions`, {
+        const response = await fetch(`${API_BASE}/picks`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ predictionId, picks }),
@@ -656,7 +656,7 @@ export function usePredictions(jackpotId?: string): UsePredictionsReturn {
     async (predictionId: string): Promise<boolean> => {
       try {
         setSubmitting(true);
-        const response = await fetch(`${API_BASE}/predictions`, {
+        const response = await fetch(`${API_BASE}/picks`, {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ predictionId }),

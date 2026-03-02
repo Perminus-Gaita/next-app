@@ -16,7 +16,7 @@ export default function PicksPage() {
     async function fetchPredictions() {
       setPredictionsLoading(true);
       try {
-        const res = await fetch(`/api/jackpots/${jackpot!._id}/predictions`);
+        const res = await fetch(`/api/jackpots/${jackpot!._id}/picks`);
         if (res.ok) {
           const data = await res.json();
           setPredictions(data);

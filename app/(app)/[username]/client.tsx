@@ -223,7 +223,7 @@ export default function ProfileClient({ username }: ProfileClientProps) {
   return (
     <div className="w-full">
       {/* Profile Header */}
-      <div className="border-b p-4 relative">
+      <div className="flex border-b border-border p-5 relative h-41.25">
         {/* Edit button — only on own profile, only when not editing */}
         {isOwnProfile && !isEditing && (
           <button
@@ -237,7 +237,7 @@ export default function ProfileClient({ username }: ProfileClientProps) {
 
         {/* Cancel / Save buttons when editing */}
         {isEditing && (
-          <div className="absolute top-3 right-3 flex items-center gap-1">
+          <div className="absolute top-3 right-3 flex items-center gap-1 m-auto">
             <button
               onClick={cancelEditing}
               disabled={saving}
@@ -264,8 +264,8 @@ export default function ProfileClient({ username }: ProfileClientProps) {
         {/* Profile info row */}
         {!isEditing ? (
           /* ── View mode ── */
-          <div className="flex items-center gap-3">
-            <Avatar className="h-[50px] w-[50px] shrink-0">
+          <div className="flex items-center gap-3 justify-center m-auto">
+            <Avatar className="size-12.5 shrink-0">
               <AvatarImage
                 src={profile.image || undefined}
                 alt={profile.name || profile.username}
@@ -285,7 +285,7 @@ export default function ProfileClient({ username }: ProfileClientProps) {
           </div>
         ) : (
           /* ── Edit mode ── */
-          <div className="flex items-start gap-3 pr-16">
+          <div className="flex items-start gap-3 pr-16 m-auto">
             {/* Avatar with camera overlay */}
             <button
               type="button"
